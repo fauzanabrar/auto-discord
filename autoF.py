@@ -39,6 +39,7 @@ def confirm(channel):
 
 def train(n, seconds):
   for i in range(n):
+    sendMessage(tatsu, f"train {i+1}")
     status = sendMessage(tatsu, "t!tg train")
     print(i+1," status train : ", status)
     if(seconds <= 10):
@@ -48,6 +49,7 @@ def train(n, seconds):
 
 def walk(n, seconds):
   for i in range(round(n/2)):
+    sendMessage(tatsu, f"walk {i + 1}")
     status = sendMessage(tatsu, "t!tg feed")
     time.sleep(random.randint(12,20))
     print(i + 1, " status feed : ", status)
@@ -66,6 +68,7 @@ def fish(n, seconds):
   nfish = 0
   i = 0
   while nfish != n:
+    sendMessage(tatsu, f"fish {i + 1}")
     status = sendMessage(tatsu, "t!fish")
     print(i + 1, " status fish : ", status)
     time.sleep(2)
@@ -99,6 +102,7 @@ def fish(n, seconds):
 
 def slot(n, seconds):
   for i in range(n):
+    sendMessage(tatsu, f"slot {i + 1}")
     status = sendMessage(tatsu, "t!slot")
     print(i + 1, " status slot : ", status)
     if (seconds <= 10):
@@ -108,6 +112,7 @@ def slot(n, seconds):
 
 def cookie(n, seconds):
   for i in range(n):
+    sendMessage(tatsu, f"cookie {i + 1}")
     status = sendMessage(tatsu, "t!cookie tatsu")
     print(i + 1, " status cookie : ", status)
     if (seconds <= 10):
@@ -251,8 +256,10 @@ def start():
 
 def auto(n):
   for i in range(n):
+    print("auto ", i+1)
+    sendMessage(tatsu,f"auto {i}")
     train(2,30)
-    walk(2, 30)
+    # walk(2,30)
     time.sleep(60)
   start()
 

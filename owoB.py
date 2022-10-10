@@ -5,15 +5,25 @@ import json
 import random
 import os
 
+from twocaptcha import TwoCaptcha
 
 auth = "MTAyMzQzODQ2OTYyMTYyMDg1Nw.GQposd.457v3IY1XOH6Dyurv0nAp2sT6uwqdMa-qPMK_M" #b
-
+username = "bayes4"
 
 
 owoChannel = [1023873700308729866,1026703938344460298,1026704288925364324,1026704327206772826,1026704357888102410,1026704382873579551]
 owo = random.choice(owoChannel)
 
 urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
+
+owoChat = 1026081223518453780
+
+def solveChaptcha(url):
+  solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
+  # url = 'https://cdn.discordapp.com/attachments/1025838862649540629/1027169472798277663/captcha.png'
+  result = solver.normal(url, caseSensitive=1)
+
+  return result['code']
 
 
 def retrieve_message(channelId, row=0):
@@ -39,15 +49,111 @@ def retrieve_message(channelId, row=0):
   return jsonn[0]
 
 
+
+def solve_captcha_chat():
+  res = retrieve_message(owo, 15)
+  resChat = retrieve_message(owoChat, 15)
+
+  # print(res)
+  iCaptcha = 0
+  isCaptcha = True
+  url = ""
+
+
+  for i in range(len(res)):
+
+    if "beep boop" in res[i]['content'].lower():
+      print("dapat di chat index", i)
+      iCaptcha = i
+      isCaptcha = True
+
+      url = res[iCaptcha]['attachments'][0]['url']
+      status = sendSolvedCaptcha(owoChat, url)
+      time.sleep(40)
+      print(status, "solve captcha")
+
+      #check verified
+      res = retrieve_message(owoChat,15)
+      for i in range(len(res)):
+        if "verified" in res[i]['content'].lower():
+          print("aman")
+          isCaptcha = False
+          return False
+
+        elif "wrong verification code" in res[i]['content'].lower():
+          url = res[iCaptcha]['attachments'][0]['url']
+          status = sendSolvedCaptcha(owoChat, url)
+          time.sleep(40)
+          print(status, "ulang solve captcha")
+          check_captcha()
+          break
+
+        elif "beep boop" in res[i]['content'].lower():
+          print("dapat di dm index", i)
+          iCaptcha = i
+          isCaptcha = True
+
+          url = res[iCaptcha]['attachments'][0]['url']
+          status = sendSolvedCaptcha(owoChat, url)
+          time.sleep(40)
+          print(status, "solve captcha")
+          check_captcha()
+
+          break
+      break
+
+  return isCaptcha
+
+def solve_captcha_dm():
+  res = retrieve_message(owoChat, 15)
+  # print(res)
+  iCaptcha = 0
+  isCaptcha = True
+  url = ""
+
+  for i in range(len(res), 0, -1):
+    if "verified" in res[i]['content'].lower():
+      print("aman")
+      isCaptcha = False
+      return False
+
+    elif "wrong verification code" in res[i]['content'].lower():
+      url = res[iCaptcha]['attachments'][0]['url']
+      status = sendSolvedCaptcha(owoChat, url)
+      time.sleep(40)
+      print(status, "ulang solve captcha")
+      check_captcha()
+      break
+
+    elif "beep boop" in res[i]['content'].lower():
+      print("dapat di dm index", i)
+      iCaptcha = i
+      isCaptcha = True
+
+      url = res[iCaptcha]['attachments'][0]['url']
+      status = sendSolvedCaptcha(owoChat, url)
+      time.sleep(40)
+      print(status, "solve captcha")
+      check_captcha()
+
+      break
+
+
+  return isCaptcha
+
+
+
 def check_captcha():
   print("check captcha")
   res = retrieve_message(owo)
-  if 'content' in res:
+  if ('content' in res):
 
     content = str(res['content'])
-    if " captcha " in content:
-      print("Bot paused because captcha")
-      time.sleep(4 * 3600)
+    if ("captcha" in content) and (username in content.lower()):
+      print("dapat chaptcha")
+      if solve_captcha_chat():
+        if not solve_captcha_dm():
+          print("captcha has been verified")
   else:
     print("content tidak ditemukan")
     print(res)
@@ -59,8 +165,10 @@ def check_captcha2(res):
   if 'content' in res:
     content = str(res['content'])
     if " captcha " in content:
-      print("Bot paused because captcha")
-      time.sleep(4 * 3600)
+      print("dapat chaptcha")
+      if solve_captcha_chat():
+        if not solve_captcha_dm():
+          print("captcha has been verified")
   else:
     print("content tidak ditemukan")
     print(res)
@@ -84,6 +192,13 @@ def sendMessage(channel_id, message):
   r = requests.post(url, data=data, headers=header)
   return r.status_code
 
+def sendSolvedCaptcha(channel_id, captchaUrl):
+  url = 'https://discord.com/api/v8/channels/{}/messages'.format(channel_id)
+  solved = solveChaptcha(captchaUrl)
+  data = {"content": solved}
+  header = {"authorization": auth}
+  r = requests.post(url, data=data, headers=header)
+  return r.status_code
 
 def wh():
   status = sendMessage(owo, "wh")
@@ -180,7 +295,7 @@ def randomCmd():
   elif n < 300:
     wq()
   elif n < 400:
-    # wb()
+    wb()
     pass
   elif n < 500:
     wh()
@@ -198,18 +313,13 @@ def randomCmd():
 
 i = 1
 while True:
-  if i % 20 == 0:
-    time.sleep(1*3600)
-  check_captcha()
-  for i in range(random.randint(10,50)):
-    if random.randint(0,30)> 70:
-      # print(i, " wb ", wb())
-      time.sleep(random.randint(5,10))
+  for i in range(random.randint(100,150)):
+    print(i, " wb ", wb())
+    time.sleep(random.randint(5,7))
     print(i, " wh ", wh())
-    time.sleep(random.randint(5,10))
+    time.sleep(random.randint(5,7))
     randomCmd()
     time.sleep(random.randint(5, 10))
-    time.sleep(random.randint(13,25))
 
   new_slot()
   time.sleep(random.randint(5, 10))
@@ -220,5 +330,5 @@ while True:
 
   owo = r
 
-  time.sleep(random.randint(150, 2*200))
+  time.sleep(random.randint(60, 2*60))
   i+=1
