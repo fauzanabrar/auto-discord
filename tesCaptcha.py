@@ -17,6 +17,16 @@ def solveChaptcha(url):
 
   return result['code']
 
+def solverHcaptcha():
+  solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
+
+  result = solver.hcaptcha(
+    sitekey='3daa39de-f5bb-45a7-8782-e1b3b9816d6d',
+    url='https://top.gg/bot/408785106942164992/vote',
+  )
+
+  print(result)
+
 
 def retrieve_message(channelId, row=0):
   header = {
@@ -28,13 +38,6 @@ def retrieve_message(channelId, row=0):
 
   # print(r.text)
   jsonn = json.loads(r.text)
-  # cusId = jsonn[0]['components'][0]["components"][0]['custom_id']
-  # print(json.dumps(jsonn,indent=4))
-  # print(jsonn[0]['content'])
-  # print(jsonn[0]['components'][0]["components"][0]['custom_id'])
-  # for value in jsonn:
-  #   print(value)
-  # print(jsonn)
   if row != 0:
     return jsonn[0:row]
 
@@ -47,7 +50,9 @@ def sendMessage(channel_id, message):
   r = requests.post(url, data=data, headers=header)
   return r.status_code
 
-res = retrieve_message(owoChat,row = 3)
-print(res)
-url = res[0]['attachments'][0]['url']
-sendMessage(owoChat, solveChaptcha(url))
+# res = retrieve_message(owoChat,row = 3)
+# print(res)
+# url = res[0]['attachments'][0]['url']
+# sendMessage(owoChat, solveChaptcha(url))
+
+solverHcaptcha()

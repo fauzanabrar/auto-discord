@@ -73,7 +73,7 @@ def solve_captcha_chat():
           return False
 
         elif "wrong verification code" in res[i]['content'].lower():
-          url = res[iCaptcha]['attachments'][0]['url']
+          # url = res[iCaptcha]['attachments'][0]['url']
           status = sendSolvedCaptcha(owoChat, url)
           time.sleep(40)
           print(status, "ulang solve captcha")
@@ -110,7 +110,7 @@ def solve_captcha_dm():
       return False
 
     elif "wrong verification code" in res[i]['content'].lower():
-      url = res[iCaptcha]['attachments'][0]['url']
+      # url = res[iCaptcha]['attachments'][0]['url']
       status = sendSolvedCaptcha(owoChat, url)
       time.sleep(40)
       print(status, "ulang solve captcha")
@@ -240,8 +240,8 @@ def sayOwo():
 
 # 1k, 2k, 4k, 12k, 30k, 100k, 150k
 def new_slot():
-  new_bet = [1,3,9,20,50,120,270, 600, 1500, 5000, 15000]
-  # new_bet = [10, 30, 90, 200, 500, 1200, 2700, 6000, 15000, 50000, 150000]
+  # new_bet = [1,3,9,20,50,120,270, 600, 1500, 5000, 15000]
+  new_bet = [10, 30, 90, 200, 500, 1200, 2700, 6000, 15000, 50000, 150000]
   seconds = 25
   win = 0
   lose = 0

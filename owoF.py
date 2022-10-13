@@ -15,6 +15,7 @@ username = "foztr4"
 owoChannel = [1023873700308729866,1026703938344460298,1026704288925364324,1026704327206772826,1026704357888102410,1026704382873579551]
 owo = random.choice(owoChannel)
 
+
 urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
 
 
@@ -83,7 +84,7 @@ def solve_captcha_chat():
           return False
 
         elif "wrong verification code" in res[i]['content'].lower():
-          url = res[iCaptcha]['attachments'][0]['url']
+          # url = res[iCaptcha]['attachments'][0]['url']
           status = sendSolvedCaptcha(owoChat, url)
           time.sleep(40)
           print(status, "ulang solve captcha")
@@ -120,7 +121,7 @@ def solve_captcha_dm():
       return False
 
     elif "wrong verification code" in res[i]['content'].lower():
-      url = res[iCaptcha]['attachments'][0]['url']
+      # url = res[iCaptcha]['attachments'][0]['url']
       status = sendSolvedCaptcha(owoChat, url)
       time.sleep(40)
       print(status, "ulang solve captcha")
