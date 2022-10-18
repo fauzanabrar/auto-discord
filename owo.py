@@ -14,17 +14,25 @@ username = "leghorn"
 owoChannel = [1023873700308729866,1026703938344460298,1026704288925364324,1026704327206772826,1026704357888102410,1026704382873579551]
 owo = random.choice(owoChannel)
 
-urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
 
-owoChat = 1021798935548936272
+urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
+captchaId = ""
+
+owoChat = 1025838862649540629
 
 def solveChaptcha(url):
   solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
-  # url = 'https://cdn.discordapp.com/attachments/1025838862649540629/1027169472798277663/captcha.png'
   result = solver.normal(url, caseSensitive=1)
 
-  return result['code']
+  return result
 
+def report_bad(id):
+  # solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
+  key = 'd48130f88087c7b46fae7ef52dff8f6a'
+  url = f'http://2captcha.com/res.php?key={key}&action=reportbad&id={id}'
+  r = requests.get(url)
+
+  return r
 
 def retrieve_message(channelId, row=0):
   header = {
@@ -35,12 +43,11 @@ def retrieve_message(channelId, row=0):
   )
 
   jsonn = json.loads(r.text)
+
   if row != 0:
     return jsonn[0:row]
 
   return jsonn[0]
-
-
 
 def solve_captcha_chat():
   res = retrieve_message(owo, 15)
@@ -73,7 +80,10 @@ def solve_captcha_chat():
           return False
 
         elif "wrong verification code" in res[i]['content'].lower():
+          global captchaId
           # url = res[iCaptcha]['attachments'][0]['url']
+          statusBadReport = report_bad(captchaId)
+          print(statusBadReport, "Report wrong captcha")
           status = sendSolvedCaptcha(owoChat, url)
           time.sleep(40)
           print(status, "ulang solve captcha")
@@ -110,7 +120,10 @@ def solve_captcha_dm():
       return False
 
     elif "wrong verification code" in res[i]['content'].lower():
+      global captchaId
       # url = res[iCaptcha]['attachments'][0]['url']
+      statusBadReport = report_bad(captchaId)
+      print(statusBadReport, "Report wrong captcha")
       status = sendSolvedCaptcha(owoChat, url)
       time.sleep(40)
       print(status, "ulang solve captcha")
@@ -133,12 +146,10 @@ def solve_captcha_dm():
 
   return isCaptcha
 
-
-
 def check_captcha():
   print("check captcha")
   res = retrieve_message(owo)
-  if 'content' in res:
+  if ('content' in res):
 
     content = str(res['content'])
     if ("captcha" in content) and (username in content.lower()):
@@ -149,8 +160,6 @@ def check_captcha():
   else:
     print("content tidak ditemukan")
     print(res)
-
-
 
 def check_captcha2(res):
   print("check captcha")
@@ -164,7 +173,6 @@ def check_captcha2(res):
   else:
     print("content tidak ditemukan")
     print(res)
-
 
 def check(func):
     '''Decorator that check chaptcha after use command.'''
@@ -185,8 +193,11 @@ def sendMessage(channel_id, message):
   return r.status_code
 
 def sendSolvedCaptcha(channel_id, captchaUrl):
+  global captchaId
   url = 'https://discord.com/api/v8/channels/{}/messages'.format(channel_id)
-  solved = solveChaptcha(captchaUrl)
+  result = solveChaptcha(captchaUrl)
+  solved = result['code']
+  captchaId = result['captchaId']
   data = {"content": solved}
   header = {"authorization": auth}
   r = requests.post(url, data=data, headers=header)
@@ -216,7 +227,6 @@ def randomChat():
 def wq():
   status = sendMessage(owo, "wq")
   return status
-
 
 def wlevel():
   status = sendMessage(owo, "wlevel")
@@ -274,6 +284,9 @@ def new_slot():
 
     randomCmd()
 
+def wdaily():
+  status = sendMessage(owo, "wdaily")
+  return status
 
 def randomCmd():
   n = random.randint(0,1000)
@@ -282,8 +295,10 @@ def randomCmd():
     wcash()
   elif n < 150:
     wpray()
-  elif n < 200:
+  elif n < 175:
     randomChat()
+  elif n < 200:
+    wdaily()
   elif n < 300:
     wq()
   elif n < 400:
@@ -301,6 +316,9 @@ def randomCmd():
     winv()
   elif n < 1000:
     sayOwo()
+
+
+
 
 
 i = 1

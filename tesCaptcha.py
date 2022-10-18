@@ -12,10 +12,10 @@ owoChat = 1025838862649540629
 
 def solveChaptcha(url):
   solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
-  # url = 'https://cdn.discordapp.com/attachments/1025838862649540629/1027169472798277663/captcha.png'
+  url = 'https://cdn.discordapp.com/attachments/1025838862649540629/1027169472798277663/captcha.png'
   result = solver.normal(url, caseSensitive=1)
 
-  return result['code']
+  return result
 
 def solverHcaptcha():
   solver = TwoCaptcha('d48130f88087c7b46fae7ef52dff8f6a')
@@ -55,4 +55,5 @@ def sendMessage(channel_id, message):
 # url = res[0]['attachments'][0]['url']
 # sendMessage(owoChat, solveChaptcha(url))
 
-solverHcaptcha()
+# solverHcaptcha()
+print(solveChaptcha(''))
