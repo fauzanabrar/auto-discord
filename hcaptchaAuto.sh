@@ -7,5 +7,6 @@ tmux new -d -s 8 "bash --init-file <(echo python3 BHcaptcha.py)"
 sleep 3600
 tmux new -d -s 9 "bash --init-file <(echo python3 FHcaptcha.py)"
 sleep 3600
-tmux new -d -s 7 "bash --init-file <(echo python3 AHCaptcha.py)"
+tmux new -d -s 10 "bash --init-file <(echo python3 AHCaptcha.py)"
+
 

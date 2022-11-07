@@ -252,5 +252,5 @@ authb = "MTAyMzQzODQ2OTYyMTYyMDg1Nw.GQposd.457v3IY1XOH6Dyurv0nAp2sT6uwqdMa-qPMK_
 # runVote(authb, dank)
 
 runVote(authf, tatsu)
-runVote(authf, owo)
+# runVote(authf, owo)
 runVote(authf, dank)

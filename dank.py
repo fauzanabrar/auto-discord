@@ -1,4 +1,5 @@
 import json
+import random
 import time
 import os
 import requests
@@ -6,6 +7,7 @@ import requests
 
 
 dank = "1023197387063308318"
+dank_memer = "1020998895960084530"
 
 
 urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
@@ -41,6 +43,10 @@ def retrieve_message(channelId):
   except:
     time.sleep(1)
     return retrieve_message(channelId)
+
+def check_res():
+
+  pass
 
 def fishing():
     fish = {
@@ -158,6 +164,25 @@ def begging():
     }
     return sendInteract(beg)
 
+def choose_postmemes(custom_id, value, message_id):
+  return {
+     "type":3,
+     "guild_id":"1020996568029077596",
+     "channel_id":dank,
+     "message_flags":0,
+     "message_id":message_id,
+     "application_id":"270904126974590976",
+     "session_id":"4f3e7d4f9dd539b87416e294ef65020e",
+     "data":{
+        "component_type":3,
+        "custom_id":custom_id,
+        "type":3,
+        "values":[
+           value
+        ]
+     }
+  }
+
 def postMemes():
   post = {
     "type": 2,
@@ -188,14 +213,46 @@ def postMemes():
   p = sendInteract(post)
   print("post", p)
 
-  time.sleep(2)
-
-  allOptions = ['Fresh', 'Repost', 'Intellectual', 'Copypasta', 'Kind']
-  choose = ['Fresh']
-  chooseComponents(choose)
-
-def chooseComponents(arr):
+  time.sleep(1)
   res = retrieve_message(dank)
+  try:
+    message_id = res['id']
+    custom_id1 = res['components'][0]['components'][0]['custom_id']  # select platform
+    custom_id2 = res['components'][1]['components'][0]['custom_id']  # select meme type
+    post_btn = res['components'][2]['components'][0]['custom_id']  # post button
+
+    platforms = ["discord", "reddit", "twitter", "facebook"]
+    meme_types = ["Fresh", "Repost", "Intellectual", "Copypasta", "Kind"]
+
+    p = sendInteract(choose_postmemes(custom_id1,random.choice(platforms), message_id))
+    print("platform memes choosed", p)
+    time.sleep(1)
+    p = sendInteract(choose_postmemes(custom_id2,random.choice(meme_types), message_id))
+    print("meme type has choosed", p)
+    time.sleep(1)
+
+    post_meme = {
+       "type":3,
+       "guild_id":"1020996568029077596",
+       "channel_id":dank,
+       "message_flags":0,
+       "message_id":message_id,
+       "application_id":"270904126974590976",
+       "session_id":"4f3e7d4f9dd539b87416e294ef65020e",
+       "data":{
+          "component_type":2,
+          "custom_id":post_btn
+       }
+    }
+
+    p = sendInteract(post_meme)
+    print("meme has posted", p)
+  except:
+    pass
+
+
+def chooseComponents(arr, channelId = dank):
+  res = retrieve_message(channelId)
   messageId = res['id']
   try:
     components = res['components'][0]['components']
@@ -205,16 +262,16 @@ def chooseComponents(arr):
       if isChoosed:
         break
       for i in components:
-        # print(j)
-        # print(i['label'])
-        # print(i['custom_id'])
+        print(j)
+        print(i['label'])
+        print(i['custom_id'])
         if j.lower() == i['label'].lower():
           print("choosed",j)
           customId = i['custom_id']
           data = {
             "type": 3,
             "guild_id": "1020996568029077596",
-            "channel_id": dank,
+            "channel_id": channelId,
             "message_flags": 0,
             "message_id": messageId,
             "application_id": "270904126974590976",
@@ -349,6 +406,7 @@ def auto_search():
     "Bathroom",
     "Beehive",
     "Kitchen",
+    "Stock Market",
     "Book",
     "Dresser",
     "Briefcase",
@@ -517,9 +575,6 @@ def auto_use_item(item):
   i = sendInteract(itemPayload)
   print(f"use {item}", i)
   time.sleep(3)
-
-def auto_pepe_adv():
-  pass
 
 def highlow():
   highlowPayload = {
@@ -830,7 +885,10 @@ def new_pepe_adv():
 
 
 def mini_game():
+
   res = retrieve_message(1020998895960084530)
+  print("check mini game")
+  print(res)
 
   if not 'description' in (res['embeds'][0]) :
     print("dont have description")
@@ -838,6 +896,7 @@ def mini_game():
   choose = []
   desc = res['embeds'][0]['description']
   if "Dunk the ball!" in desc:
+    print("dunk the ball")
     b = desc.split("\n")
     c = b[2]
 
@@ -849,6 +908,7 @@ def mini_game():
       choose.append("right")
 
   elif "Hit the ball!" in desc:
+    print("hit the ball")
     b = desc.split("\n")
     c = b[2]
 
@@ -860,6 +920,7 @@ def mini_game():
       choose.append("left")
 
   elif "Catch the fish!" in desc:
+    print("catch the fish")
     b = desc.split("\n")
     c = b[1]
 
@@ -871,6 +932,7 @@ def mini_game():
       choose.append("right")
 
   elif "Dodge the Fireball!" in desc:
+    print("dodge the fireball")
     b = desc.split("\n")
     c = b[2]
 
@@ -882,7 +944,8 @@ def mini_game():
       choose.append("right")
 
   if len(choose) != 0:
-    chooseComponents(choose)
+    print("time to choose", choose)
+    chooseComponents(choose, dank_memer)
 
 
 
@@ -893,10 +956,9 @@ def mini_game():
 # auto_use_item('Pizza Slice')
 # auto_use_item('Daily Box')
 # auto_use_item('Fishing Bait')
+# auto_use_item('Fishing Bait')
 
-
-
-
+#
 jalan = 0
 
 while True:
@@ -937,9 +999,3 @@ while True:
   auto_crime()
   time.sleep(5)
   jalan+=1
-
-
-
-
-
-

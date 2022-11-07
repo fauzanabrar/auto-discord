@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="34.125.88.0" id="b3da7e7e-3c34-4a98-9b52-82d2bff5afa1" keyPath="C:\Users\ASUS\.ssh\ubuntu-desktop" port="22" nameFormat="DESCRIPTIVE" username="alzifoztran" useOpenSSHConfig="true" />
+      <sshConfig host="35.186.148.61" id="046ad31e-9060-4575-8094-35199f91a590" keyPath="C:\Users\ASUS\.ssh\ubuntu-desktop" port="22" nameFormat="DESCRIPTIVE" username="alzifoztran" useOpenSSHConfig="true" />
+      <sshConfig connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="34.125.107.60" id="236d41e0-976e-4645-96c9-15ad74a29865" keyPath="C:\Users\ASUS\.ssh\id_rsa" port="22" nameFormat="DESCRIPTIVE" username="alzi" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

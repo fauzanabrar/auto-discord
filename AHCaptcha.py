@@ -257,5 +257,5 @@ auth = "NzEyNTYzNzQ3ODEzNTg5MDQy.YVas6Q.xpjaHQGhqmUTOXvZhOTNy4RwGuA"
 # runVote(authf, dank)
 
 runVote(auth, tatsu)
-runVote(auth, owo)
+# runVote(auth, owo)
 runVote(auth, dank)

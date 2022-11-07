@@ -248,7 +248,7 @@ authf = "MTAyMzQ0MDQ0OTk0OTY3MTQyNA.GwXXGc.ySIfRxhZjaSJTzJ6oykgJwlnGxn2rODv5ztyn
 authb = "MTAyMzQzODQ2OTYyMTYyMDg1Nw.GQposd.457v3IY1XOH6Dyurv0nAp2sT6uwqdMa-qPMK_M"  # b
 
 runVote(authb, tatsu)
-runVote(authb, owo)
+# runVote(authb, owo)
 runVote(authb, dank)
 
 # runVote(authf, tatsu)
