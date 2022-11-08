@@ -948,7 +948,43 @@ def mini_game():
     chooseComponents(choose, dank_memer)
 
 
+def daily():
+  daily_payload = {
+     "type":2,
+     "application_id":"270904126974590976",
+     "guild_id":"1020996568029077596",
+     "channel_id":"1020998895960084530",
+     "session_id":"d60215ea81de3d77a0d6c18d23aac088",
+     "data":{
+        "version":"1022917002748235840",
+        "id":"1011560370864930856",
+        "name":"daily",
+        "type":1,
+        "options":[
 
+        ],
+        "application_command":{
+           "id":"1011560370864930856",
+           "application_id":"270904126974590976",
+           "version":"1022917002748235840",
+           "default_permission":True,
+           "default_member_permissions":"null",
+           "type":1,
+           "name":"daily",
+           "description":"Each day you can get an injection of coins and maintain a streak.",
+           "dm_permission":True
+        },
+        "attachments":[
+
+        ]
+     },
+  }
+
+  daily_post = sendInteract(daily_payload)
+  print("daily", daily_post)
+
+
+#
 # auto_use_item('Apple')
 # auto_use_item('Lucky Horseshoe')
 # auto_use_item("Cupid's Big Toe")
@@ -958,7 +994,7 @@ def mini_game():
 # auto_use_item('Fishing Bait')
 # auto_use_item('Fishing Bait')
 
-#
+
 jalan = 0
 
 while True:
@@ -974,6 +1010,10 @@ while True:
   # if jalan % 67 == 0:
   #   auto_use_item('Pizza Slice')
   #   time.sleep(4)
+
+  if jalan % 1850 == 0:
+    daily()
+    time.sleep(3)
 
 
   print(fishing())
@@ -999,3 +1039,4 @@ while True:
   auto_crime()
   time.sleep(5)
   jalan+=1
+
