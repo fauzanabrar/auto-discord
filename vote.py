@@ -1,233 +1,82 @@
-import json
-import time
-import os
-import requests
+from playwright.sync_api import sync_playwright
+
+
+def runVote(auth, url, url2):
+  with sync_playwright() as p:
+    try:
+
+      browser = p.webkit.launch(headless=True, slow_mo=3 * 100)
+      page = browser.new_page()
+      # page.goto(url, timeout=0)
+      #
+      # # click vote
+      # print("just wait, berhasil?")
+      # page.locator("text=Vote").nth(1).click()
+      # print("udah")
+      # page.wait_for_timeout(5 * 1000)
+
+      ## next url
+      page.goto(url2, timeout=0)
+
+      # click vote
+      print("just wait, berhasil?")
+      page.locator("text=Upvote").nth(1).click()
+      print("udah")
+      page.wait_for_timeout(5 * 1000)
+
+      browser.close()
+    except:
+      browser.close()
+      print("belum authoritize")
+      browser = p.webkit.launch(headless=True, slow_mo=3 * 100)
+      page = browser.new_page()
+      page.goto(url, timeout=0)
+
+      # detect login to vote
+      tes = page.locator('//*[@id="chakra-modal-13"]/div[2]/a[1]')
+      print(tes.inner_html())
+      tes.click(timeout=0)
+
+      # login discord with auth token
+      sauth = f'document.body.appendChild(document.createElement `iframe`).contentWindow.localStorage.token = `"{auth}"`'
+      page.wait_for_selector(
+        '//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/form/div/div/div[1]/div[2]/button[2]',
+        timeout=0)
+      page.evaluate(sauth)
+      print("berhasil evaluate")
+      page.reload(timeout=0)
+      print("berhasil reload")
+
+      # authoritize top.gg
+      page.wait_for_selector('//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]',
+                             timeout=0)
+      authorize = page.locator('//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]')
+      authorize.click(timeout=0)
+
+      # click vote
+      page.wait_for_url(url, timeout=0)
+      print("just wait, berhasil?")
+      page.locator("text=Vote").nth(1).click()
+      print("udah")
+
+      browser.close()
 
 
 
-dank = "1020998895960084530"
+authf = "MTAyMzQ0MDQ0OTk0OTY3MTQyNA.GwXXGc.ySIfRxhZjaSJTzJ6oykgJwlnGxn2rODv5ztynQ"  # f
+authb = "MTAyMzQzODQ2OTYyMTYyMDg1Nw.GQposd.457v3IY1XOH6Dyurv0nAp2sT6uwqdMa-qPMK_M"  # b
+auth = "NzEyNTYzNzQ3ODEzNTg5MDQy.YVas6Q.xpjaHQGhqmUTOXvZhOTNy4RwGuA"
 
-urlVote = "https://discordbotlist.com/api/v1/bots/270904126974590976/upvote"
-urlVote = "https://discordbotlist.com/api/v1"
-authVote = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0IjowLCJ0b2tlbiI6IldCdkdhR0ZUbGJGZUtWVFdqdTdzV3AwMHJOVDVWSSIsImlkIjoiNzEyNTYzNzQ3ODEzNTg5MDQyIiwiaWF0IjoxNjYzNzM5NDI3LCJleHAiOjIyNjg1Mzk0Mjd9.oh4fRb04uZO8WMQxn9eWoW5SmLwazdqff6wglqOx_Gk"
-secret = {"secret":"=7e023ffa"}
-secret = {"secret":"=MTM3cjMxkzM"}
+owo = "https://top.gg/bot/408785106942164992/vote"  # owo
+dank = "https://top.gg/bot/270904126974590976/vote"  # dank
+mudae = "https://top.gg/bot/432610292342587392/vote"  # mudae
+poketwo = "https://top.gg/bot/716390085896962058/vote"  # poketwo
+soccerGuru = "https://top.gg/bot/668075833780469772/vote"  # soccer guru
+tatsu = "https://top.gg/bot/172002275412279296/vote"
 
-
-urlMsg = "https://discord.com/api/v9/channels/1019193416254496778/messages"
-auth = 'NzEyNTYzNzQ3ODEzNTg5MDQy.YVas6Q.xpjaHQGhqmUTOXvZhOTNy4RwGuA'
-urlInteract = "https://discord.com/api/v9/interactions"
-
-
-def sendMessage(channel_id, message):
-  url = 'https://discord.com/api/v8/channels/{}/messages'.format(channel_id)
-  data = {"content": message}
-  header = {"authorization": auth}
-  r = requests.post(url, json=data, headers=header)
-  return r.status_code
-
-def sendInteract(payload):
-  url = urlVote
-  data = payload
-  header = {"authorization": auth}
-  r = requests.post(url, json=data, headers=header)
-  return r.status_code
-
-def retrieve_message(channelId):
-  header = {
-    'authorization' : authVote
-  }
-  r = requests.get(
-    "https://discordbotlist.com/bots/tatsu/upvote", headers=header
-  )
-  print(r.text)
-  # jsonn = json.loads(r.text)
-  # print(jsonn[0])
-  # return jsonn[0]
-
-def fishing():
-    fish = {
-      "type": 2,
-      "application_id": "270904126974590976",
-      "guild_id": "1020996568029077596",
-      "channel_id": "1020998895960084530",
-      "session_id": "a8e82f3c195b2c33c17643a3b43150ed",
-      "data": {
-        "version": "1022917002878259287",
-        "id": "1011560371078832206",
-        "name": "fish",
-        "type": 1,
-        "options": [],
-        "application_command": {
-          "id": "1011560371078832206",
-          "application_id": "270904126974590976",
-          "version": "1022917002878259287",
-          "default_permission": "true",
-          "default_member_permissions": "null",
-          "type": 1,
-          "name": "fish",
-          "description": "Grab a fishing pole from the shop and go fishing for some fun items!",
-          "dm_permission": "true"
-        },
-        "attachments": []
-      }
-    }
-    return sendInteract(fish)
-
-def diging():
-    dig = {
-      "type": 2,
-      "application_id": "270904126974590976",
-      "guild_id": "1020996568029077596",
-      "channel_id": "1020998895960084530",
-      "session_id": "a8e82f3c195b2c33c17643a3b43150ed",
-      "data": {
-        "version": "1022917002878259285",
-        "id": "1011560371078832204",
-        "name": "dig",
-        "type": 1,
-        "options": [],
-        "application_command": {
-          "id": "1011560371078832204",
-          "application_id": "270904126974590976",
-          "version": "1022917002878259285",
-          "default_permission": "true",
-          "default_member_permissions": "null",
-          "type": 1,
-          "name": "dig",
-          "description": "Dig in the dirt for bugs and other fun items.",
-          "dm_permission": "true"
-        },
-        "attachments": []
-      }
-    }
-    return sendInteract(dig)
-
-def hunting():
-    hunt = {
-      "type": 2,
-      "application_id": "270904126974590976",
-      "guild_id": "1020996568029077596",
-      "channel_id": "1020998895960084530",
-      "session_id": "a8e82f3c195b2c33c17643a3b43150ed",
-      "data": {
-        "version": "1022917002932793367",
-        "id": "1011560371171102760",
-        "name": "hunt",
-        "type": 1,
-        "options": [],
-        "application_command": {
-          "id": "1011560371171102760",
-          "application_id": "270904126974590976",
-          "version": "1022917002932793367",
-          "default_permission": "true",
-          "default_member_permissions": "null",
-          "type": 1,
-          "name": "hunt",
-          "description": "Grab a rifle from the shop and go hunting for fun items!",
-          "dm_permission": "true"
-        },
-        "attachments": []
-      }
-    }
-    return sendInteract(hunt)
-
-def begging():
-    beg = {
-      "type": 2,
-      "application_id": "270904126974590976",
-      "guild_id": "1020996568029077596",
-      "channel_id": "1020998895960084530",
-      "session_id": "a8e82f3c195b2c33c17643a3b43150ed",
-      "data": {
-        "version": "1022917002878259280",
-        "id": "1011560371041095699",
-        "name": "beg",
-        "type": 1,
-        "options": [],
-        "application_command": {
-          "id": "1011560371041095699",
-          "application_id": "270904126974590976",
-          "version": "1022917002878259280",
-          "default_permission": "true",
-          "default_member_permissions": "null",
-          "type": 1,
-          "name": "beg",
-          "description": "Beg for coins to help bolster your pocket balance.",
-          "dm_permission": "true"
-        },
-        "attachments": []
-      }
-    }
-    return sendInteract(beg)
-
-def postMemes():
-  post = {
-    "type": 2,
-    "application_id": "270904126974590976",
-    "guild_id": "1020996568029077596",
-    "channel_id": "1020998895960084530",
-    "session_id": "c19bf8530a1860234764bb1c0f97ee35",
-    "data": {
-      "version": "1022917002794381384",
-      "id": "1011560370911072263",
-      "name": "postmemes",
-      "type": 1,
-      "options": [],
-      "application_command": {
-        "id": "1011560370911072263",
-        "application_id": "270904126974590976",
-        "version": "1022917002794381384",
-        "default_permission": "true",
-        "default_member_permissions": "null",
-        "type": 1,
-        "name": "postmemes",
-        "description": "Post (fake) memes with the chance to earn some coins.",
-        "dm_permission": "true"
-      },
-      "attachments": []
-    }
-  }
-  p = sendInteract(post)
-  print("post", p)
-
-  time.sleep(2)
-
-  res = retrieve_message(dank)
-  messageId = res['id']
-  # customId = res['components'][0]['components'][4]['custom_id']
-  customId = res['components'][0]['components'][4]['custom_id']
-  kind = {
-    "type": 3,
-    "guild_id": "1020996568029077596",
-    "channel_id": dank,
-    "message_flags": 0,
-    "message_id": messageId,
-    "application_id": "270904126974590976",
-    "session_id": "c19bf8530a1860234764bb1c0f97ee35",
-    "data": {
-      "component_type": 2,
-      "custom_id": customId
-    }
-  }
-  k = sendInteract(kind)
-  print("kind", k)
+dank2 = "https://discordbotlist.com/bots/dank-memer/upvote"
+tatsu2 = "https://discordbotlist.com/bots/tatsu/upvote"
 
 
-#
-# while True:
-#     print(fishing())
-#     time.sleep(3)
-#     print(hunting())
-#     time.sleep(3)
-#     print(diging())
-#     time.sleep(3)
-#     print(begging())
-#     time.sleep(3)
-#     postMemes()
-#     time.sleep(40)
 
-
-retrieve_message(dank)
-
-sendInteract(secret)
+runTest(authf,tatsu2)
