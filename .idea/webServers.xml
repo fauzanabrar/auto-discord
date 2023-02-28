@@ -16,6 +16,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="41c949d3-cf3f-49be-be24-d4a368d3b147" name="baymact@34.87.41.41">
+        <fileTransfer rootFolder="/home/baymact" accessType="SFTP" host="34.87.41.41" port="22" sshConfigId="0e391791-a6e3-47b2-b20d-659f39e9c3e8" sshConfig="baymact@34.87.41.41:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
