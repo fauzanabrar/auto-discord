@@ -1,0 +1,26 @@
+[
+  {
+    "auth_token" : "YOUR AUTH TOKEN ACCOUNT 1",
+    "channel_id" : {
+      "dank": {
+        "url": "YOUR DANK MEMER CHANNEL URL",
+        "application_id": "YOUR APPLICATION ID ACCOUNT 1",
+        "session_id": "YOUR SESSION ID ACCOUNT 2"
+      },
+      "tatsu_channel_id": "YOUR TATSU CHANNEL ID",
+      "owo_channel_id": "YOUR OWO CHANNEL ID"
+    }
+  },
+  {
+    "auth_token" : "YOUR AUTH TOKEN ACCOUNT 2",
+    "channel_id" : {
+      "dank": {
+        "url": "YOUR DANK MEMER CHANNEL URL",
+        "application_id": "YOUR APPLICATION ID ACCOUNT 2",
+        "session_id": "YOUR SESSION ID ACCOUNT 2"
+      },
+      "tatsu_channel_id": "YOUR TATSU CHANNEL ID",
+      "owo_channel_id": "YOUR OWO CHANNEL ID"
+    }
+  }
+]
