@@ -59,14 +59,17 @@ async def main():
                 # dank_auto = asyncio.create_task(auto_dank(auth_token, dank_setup[0], dank_setup[1], dank_setup[2]))
                 # t1 = threading.Thread(target=auto_dank, args=(auth_token, dank_setup[0], dank_setup[1], dank_setup[2]))
                 # t1.start()
+                # tasks.append(auto_dank(auth_token, dank_setup[0], dank_setup[1], dank_setup[2]))
 
             elif "owo" in j:
                 owo_channel_id = i["channel_id"][str(j)]
                 # owo_auto = asyncio.create_task(auto_owo(auth_token, owo_channel_id))
+                # tasks.append(auto_owo(auth_token, owo_channel_id))
 
             elif "tatsu" in j:
                 tatsu_channel_id = i["channel_id"][str(j)]
                 # tatsu_auto = asyncio.create_task(auto_tatsu(auth_token, tatsu_channel_id))
+                # tasks.append(auto_tatsu(auth_token, tatsu_channel_id))
 
             elif "ninja_sage" in j:
                 ninja_sage_channel_id = i["channel_id"][str(j)]
@@ -83,15 +86,8 @@ async def main():
                     elif "session_id" in k:
                         af_setup[2] = i["channel_id"][str(j)][str(k)]
                 # af_auto = asyncio.create_task(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
-                tasks.append(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
+                # tasks.append(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
 
-    # t1.join()
-    # await t2.join()
-    # await tatsu_auto
-    # await dank_auto
-    # await owo_auto
-    # await af_auto
-    # await ns_auto
 
     # Run all tasks concurrently
     await asyncio.gather(*tasks)
