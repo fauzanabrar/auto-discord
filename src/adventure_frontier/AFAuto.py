@@ -40,14 +40,17 @@ class AFAuto:
             callback(*args)
 
     async def run(self):
-        await self.auto_all()
+        await self.stats(8 * 60)
+        await self.hunt(7 * 60 + 20)
+        await self.attack(9 * 60 + 20)
+        await self.gather(10 * 60 + 20)
 
     async def auto_all(self):
         while True:
             await self.stats()
-            await self.hunt()
-            await self.attack()
-            await self.gather()
+            await self.hunt(7 * 60 + 20)
+            await self.attack(9 * 60 + 20)
+            await self.gather(10 * 60 + 20)
 
     async def stats(self, time=10 * 60):
         data = {
