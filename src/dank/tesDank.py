@@ -132,7 +132,7 @@ class DankTest(DankAuto):
 
 
 init = {
-    "auth_token": "MTAyMzQ0MDQ0OTk0OTY3MTQyNA.GwXXGc.ySIfRxhZjaSJTzJ6oykgJwlnGxn2rODv5ztynQ",
+    "auth_token": "",
     "channel_id": {
         "dank": {
             "url": "https://discord.com/channels/1020996568029077596/1041530557600907364",
