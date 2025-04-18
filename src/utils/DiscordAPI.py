@@ -39,3 +39,10 @@ class DiscordApi:
         r = requests.post(url, json=data, headers=header)
 
         return r
+
+    def delete_message(self, message_id):
+        url = f"https://discord.com/api/v9/channels/{self.channel_id}/messages/{message_id}"
+        header = {"authorization": self.auth_token}
+        r = requests.delete(url, headers=header)
+
+        return r.status_code

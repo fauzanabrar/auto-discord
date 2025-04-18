@@ -34,22 +34,35 @@ class NinjaSageAuto:
 
     async def halo(self):
         list_msg = [
-            ":tada:",
-            ":rocket:",
-            ":cry:",
+            "<:Shocked:955336495085019186>",
+            "<:patrik:1061825765752193074>",
+            "<:aquacry:932341310835286097>",
             ":pray:",
             ":moai:",
-            ":wave:",
+            "<:pikathumbsup:931465375462354966>",
             ":exploding_head:",
-            "halo",
+            "<:kekw:927464653322330173>",
+            "<:PepeHappy:932340970878554122>",
+            "<:pepewow:932340971025338368>",
+            "<:dogelul:955848687702143046>",
+            "<:Hehe:932341310751408168>"
         ]
         while True:
             msg = random.choice(list_msg)
             random_int = random.randint(1, 10)
-            if random_int < 4:
+            if random_int < 15:
                 await self.command(f"{msg}")
                 print(f"Command {msg} sent")
+
+                res = self.api.retrieve_message(1)
+                msg_id = res[0]["id"]
+                content = res[0]["content"]
+
+                if content == msg:
+                    self.api.delete_message(msg_id)
+                    print(f"Command {msg} deleted")
             else:
                 print(f"Command {msg} not sent")
+
             print(f"Sleeping for 240 seconds")
             await asyncio.sleep(240)
