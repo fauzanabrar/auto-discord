@@ -1,5 +1,7 @@
 import asyncio
 
+from src.ninja_sage.ninja_sage import * 
+from src.adventure_frontier.AFAuto import *
 from src.tatsu.TatsuAuto import *
 from src.dank.DankAuto import *
 from src.owo.OwoAuto import *
@@ -19,10 +21,18 @@ async def auto_owo(auth_token, channel_id):
     owo = OwoAuto(auth_token, channel_id)
     await owo.run()
 
+async def auto_af(auth_token, channel_id):
+    af = AFAuto(auth_token, channel_id)
+    await af.run()
+
+async def auto_ninja_sage(auth_token, channel_id):
+    af = NinjaSageAuto(auth_token, channel_id)
+    await af.run()
+
 async def main():
     start = time.perf_counter()
 
-    f = open("init3.json")
+    f = open("init.json")
     data_account = json.load(f)
 
     for i in data_account:
@@ -50,12 +60,18 @@ async def main():
             elif "tatsu" in j:
                 tatsu_channel_id = i['channel_id'][str(j)]
                 # tatsu_auto = asyncio.create_task(auto_tatsu(auth_token, tatsu_channel_id))
+            elif "ninja_sage" in j:
+                af_channel_id = i['channel_id'][str(j)]
+                af_auto = asyncio.create_task(auto_ninja_sage(auth_token, af_channel_id))
 
-    t1.join()
+    # t1.join()
     # await tatsu_auto
     # await dank_auto
     # await owo_auto
-    await asyncio.sleep(2*60*60)
+
+    await af_auto
+
+    # await asyncio.sleep(2*60*60)
 
     end = time.perf_counter()
     print(f'It took {round(end-start,0)} second(s) to complete.')

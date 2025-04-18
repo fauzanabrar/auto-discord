@@ -59,6 +59,20 @@ then run ``main.py``.
 python3 main.py
 ```
 
+### How to get the data
+#### Authentication Token
+- open discord on web browser
+- login your account then inspect element
+- go to network tab and filter `/api`
+- read the request information and search for Authorization and copy the code (refresh the page if nothing)
+
+#### Channel Id
+- open discord on web browser
+- login account and open a server discord
+- choose the channel you want
+- look at the url of the page, example `https://discord.com/channels/696275213708427334/1362714778073829416`
+- the first random number is guild id `696275213708427334` and the second random number is the channel id `1362714778073829416`
+
 
 
 
