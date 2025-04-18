@@ -3,7 +3,6 @@ import asyncio
 from src.dank.DankAuto import DankAuto
 
 
-
 class DankTest(DankAuto):
     def __init__(self, auth_token, url, application_id, session_id):
         super().__init__(auth_token, url, application_id, session_id)
@@ -31,7 +30,7 @@ class DankTest(DankAuto):
         for i in res:
             try:
                 # print(i)
-                check_message = i["embeds"][0]['title']
+                check_message = i["embeds"][0]["title"]
                 if message.lower() in check_message.lower():
                     return i
             except:
@@ -133,20 +132,20 @@ class DankTest(DankAuto):
 
 
 init = {
-    "auth_token" : "MTAyMzQ0MDQ0OTk0OTY3MTQyNA.GwXXGc.ySIfRxhZjaSJTzJ6oykgJwlnGxn2rODv5ztynQ",
-    "channel_id" : {
-      "dank": {
-        "url": "https://discord.com/channels/1020996568029077596/1041530557600907364",
-        "application_id": "270904126974590976",
-        "session_id": "b895ddb84ce0aa9180ba5d80b929bcc7"
-      },
-      "tatsu_channel_id": "1025205981078114374"
-    }
-  }
+    "auth_token": "MTAyMzQ0MDQ0OTk0OTY3MTQyNA.GwXXGc.ySIfRxhZjaSJTzJ6oykgJwlnGxn2rODv5ztynQ",
+    "channel_id": {
+        "dank": {
+            "url": "https://discord.com/channels/1020996568029077596/1041530557600907364",
+            "application_id": "270904126974590976",
+            "session_id": "b895ddb84ce0aa9180ba5d80b929bcc7",
+        },
+        "tatsu_channel_id": "1025205981078114374",
+    },
+}
 
-auth = init['auth_token']
-url = init['channel_id']['dank']['url']
-app_id = init['channel_id']['dank']['application_id']
-ss_id = init['channel_id']['dank']['session_id']
+auth = init["auth_token"]
+url = init["channel_id"]["dank"]["url"]
+app_id = init["channel_id"]["dank"]["application_id"]
+ss_id = init["channel_id"]["dank"]["session_id"]
 
 asyncio.run(DankTest(auth, url, app_id, ss_id).runTest())

@@ -1,12 +1,12 @@
 import asyncio
 from playwright.async_api import async_playwright
 
+
 class Vote:
 
     def __init__(self, auth_token, link_vote):
         self.auth_token = auth_token
-        self.link_vote  = link_vote
-
+        self.link_vote = link_vote
 
     async def run(self):
         if "top.gg" in self.link_vote:
@@ -40,14 +40,19 @@ class Vote:
                 sauth = f'document.body.appendChild(document.createElement `iframe`).contentWindow.localStorage.token = `"{self.auth_token}"`'
                 page.wait_for_selector(
                     '//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/form/div/div/div[1]/div[2]/button[2]',
-                    timeout=0)
+                    timeout=0,
+                )
                 page.evaluate(sauth)
                 page.reload(timeout=0)
 
                 # authoritize top.gg
-                page.wait_for_selector('//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]',
-                                       timeout=0)
-                authorize = page.locator('//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]')
+                page.wait_for_selector(
+                    '//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]',
+                    timeout=0,
+                )
+                authorize = page.locator(
+                    '//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/div/div[2]/button[2]'
+                )
                 authorize.click(timeout=0)
 
                 # click vote
@@ -73,7 +78,8 @@ class Vote:
             sauth = f'document.body.appendChild(document.createElement `iframe`).contentWindow.localStorage.token = `"{self.auth_token}"`'
             page.wait_for_selector(
                 '//*[@id="app-mount"]/div[2]/div/div[1]/div/div/div/div/form/div/div/div[1]/div[2]/button[2]',
-                timeout=0)
+                timeout=0,
+            )
             page.evaluate(sauth)
             page.reload(timeout=0)
             page.wait_for_timeout(10 * 1000)

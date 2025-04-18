@@ -1,17 +1,21 @@
 import math
 import sys
-sys.path.append('src/utils')
+
+sys.path.append("src/utils")
 
 from src.utils.DiscordAPI import *
 from src.utils.Vote import *
+
 
 class TatsuAuto:
     def __init__(self, auth_token, channel_id):
         self.auth_token = auth_token
         self.channel_id = channel_id
-        self.api        = DiscordApi(auth_token,channel_id)
-        self.all_tasks  = [0,0,0,0,0,0]  # train, fish, walk, slot, chat, cookie
-        self.username   = json.loads(self.api.send_message("Hello").text)['author']['username']
+        self.api = DiscordApi(auth_token, channel_id)
+        self.all_tasks = [0, 0, 0, 0, 0, 0]  # train, fish, walk, slot, chat, cookie
+        self.username = json.loads(self.api.send_message("Hello").text)["author"][
+            "username"
+        ]
 
     async def schedule(self, sec, callback, *args):
         await asyncio.sleep(sec)
@@ -22,11 +26,7 @@ class TatsuAuto:
 
     async def run(self):
         await asyncio.gather(
-            self.daily(),
-            self.run_quest(),
-            self.mail(),
-            self.vote(),
-            self.auto()
+            self.daily(), self.run_quest(), self.mail(), self.vote(), self.auto()
         )
         # await self.daily()
         # await self.run_quest()
@@ -61,7 +61,7 @@ class TatsuAuto:
         await self.command("t!cookie", loop)
 
     async def walk(self, loop=1):
-        for i in range(math.ceil(loop/2)):
+        for i in range(math.ceil(loop / 2)):
             await self.feed()
             await self.command("t!tg walk")
             await self.command("t!tg walk")
@@ -77,29 +77,28 @@ class TatsuAuto:
 
     async def daily(self):
         await self.command("t!daily")
-        await self.schedule(24*60*60,self.daily)
+        await self.schedule(24 * 60 * 60, self.daily)
 
     async def vote(self):
         await self.command("t!vote", sleep=0)
         res = self.api.retrieve_message()
 
-        link_dbl = res['embeds'][0]['fields'][1]['value'].split("(")[1].split(")")[0]
-        link_topgg = res['embeds'][0]['fields'][0]['value'].split("(")[1].split(")")[0]
+        link_dbl = res["embeds"][0]["fields"][1]["value"].split("(")[1].split(")")[0]
+        link_topgg = res["embeds"][0]["fields"][0]["value"].split("(")[1].split(")")[0]
 
         await Vote(self.auth_token, link_dbl).run()
         await Vote(self.auth_token, link_topgg).run()
 
-        await self.schedule(12*60*60,self.vote)
-
+        await self.schedule(12 * 60 * 60, self.vote)
 
     async def mail(self):
         await self.command("t!mail claim all")
-        await self.schedule(24*60*60, self.mail)
+        await self.schedule(24 * 60 * 60, self.mail)
 
     async def open(self):
         await self.command("t!open")
         await self.command("1")
-        await self.command("6") # choose yellow cat pet
+        await self.command("6")  # choose yellow cat pet
         await self.confirm()
 
     async def active_pet(self):
@@ -128,12 +127,12 @@ class TatsuAuto:
         await self.quest()
         res = self.api.retrieve_message(order=10)
         for i in res:
-            if len(i['content'].split("**"))  >= 3:
-                if (self.username in i['content'].split("**")[2]):
+            if len(i["content"].split("**")) >= 3:
+                if self.username in i["content"].split("**")[2]:
                     try:
-                        tasks = i['embeds'][0]['fields']
+                        tasks = i["embeds"][0]["fields"]
                         for j in tasks:
-                            t = j['name']
+                            t = j["name"]
                             if "Walk" in t:
                                 self.all_tasks[2] = int(t.split()[3])
                             elif " Chat" in t:
@@ -152,7 +151,6 @@ class TatsuAuto:
                         await self.check_quest()
                     break
 
-
     async def run_quest(self):
         # check quest
         await self.check_quest()
@@ -162,15 +160,17 @@ class TatsuAuto:
         await self.fish(self.all_tasks[1])
         await self.walk(self.all_tasks[2])
         await self.slot(loop=self.all_tasks[3])
-        await self.train(self.all_tasks[4])        # chat
+        await self.train(self.all_tasks[4])  # chat
         await self.cookie(self.all_tasks[5])
 
         # claim quest
         await self.quest(isClaim=True)
-        await self.schedule(24*60*60, self.run_quest)
+        await self.schedule(24 * 60 * 60, self.run_quest)
 
     async def auto(self):
-        for i in range(1428):  # (60 secs * 60 minutes * 24 hours) / 50 secs = 1728 - 300 (do daily quest) = 1428 times run for a day
+        for i in range(
+            1428
+        ):  # (60 secs * 60 minutes * 24 hours) / 50 secs = 1728 - 300 (do daily quest) = 1428 times run for a day
             await self.train()
             print("auto", i)
             await asyncio.sleep(45)

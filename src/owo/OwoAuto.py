@@ -1,5 +1,6 @@
 import sys
-sys.path.append('src/utils')
+
+sys.path.append("src/utils")
 from src.utils.DiscordAPI import *
 import json
 import asyncio
@@ -9,8 +10,10 @@ class OwoAuto:
     def __init__(self, auth_token, channel_id):
         self.auth_token = auth_token
         self.channel_id = channel_id
-        self.api        = DiscordApi(auth_token,channel_id)
-        self.username   = json.loads(self.api.send_message("Hello").text)['author']['username']
+        self.api = DiscordApi(auth_token, channel_id)
+        self.username = json.loads(self.api.send_message("Hello").text)["author"][
+            "username"
+        ]
 
     async def run(self):
         await asyncio.gather(
@@ -43,7 +46,7 @@ class OwoAuto:
 
     async def pray(self):
         await self.command("owo pray")
-        await self.schedule(5*60, self.pray)
+        await self.schedule(5 * 60, self.pray)
 
     async def cash(self):
         await self.command("owo cash")
@@ -85,4 +88,3 @@ class OwoAuto:
         while True:
             await self.hunt()
             await self.battle()
-

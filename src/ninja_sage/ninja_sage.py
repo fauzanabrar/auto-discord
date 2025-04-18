@@ -1,5 +1,6 @@
 import sys
-sys.path.append('src/utils')
+
+sys.path.append("src/utils")
 from src.utils.DiscordAPI import *
 import json
 import asyncio
@@ -10,7 +11,7 @@ class NinjaSageAuto:
     def __init__(self, auth_token, channel_id):
         self.auth_token = auth_token
         self.channel_id = channel_id
-        self.api        = DiscordApi(auth_token,channel_id)
+        self.api = DiscordApi(auth_token, channel_id)
         # self.username   = json.loads(self.api.send_message("Hello").text)['author']['username']
 
     async def run(self):
@@ -32,10 +33,23 @@ class NinjaSageAuto:
             await asyncio.sleep(sleep)
 
     async def halo(self):
-        random_int = random.randint(1, 10)
-        list_msg = [":tada:", ":rocket:", ":cry:", ":pray", "moai"]
-        for i in range(1, random_int):
+        list_msg = [
+            ":tada:",
+            ":rocket:",
+            ":cry:",
+            ":pray",
+            "moai",
+            ":wave:",
+            ":exploding_head:",
+            "halo",
+        ]
+        while True:
             msg = random.choice(list_msg)
-            await self.command(f"{msg}")
-            print(f"Command {msg} sent")
+            random_int = random.randint(1, 10)
+            if random_int < 4:
+                await self.command(f"{msg}")
+                print(f"Command {msg} sent")
+            else:
+                print(f"Command {msg} not sent")
+            print(f"Sleeping for 240 seconds")
             await asyncio.sleep(240)

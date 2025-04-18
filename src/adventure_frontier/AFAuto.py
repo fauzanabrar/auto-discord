@@ -8,13 +8,13 @@ from src.utils.Vote import *
 from src.utils.BlackjackSolver import blakcjackSolver
 
 
-class DankAuto:
+class AFAuto:
 
     def __init__(self, auth_token, url, application_id, session_id):
         self.auth_token = auth_token
         self.guild_id = url.split("/")[4]
         self.channel_id = url.split("/")[5]
-        self.applicaiton_id = application_id
+        self.application_id = application_id
         self.session_id = session_id
         self.api = DiscordApi(self.auth_token, self.channel_id)
         self.username = json.loads(self.api.send_message("Hello").text)["author"][
@@ -27,7 +27,7 @@ class DankAuto:
     def payload(self, type=2):
         return {
             "type": type,
-            "application_id": self.applicaiton_id,
+            "application_id": self.application_id,
             "guild_id": self.guild_id,
             "channel_id": self.channel_id,
             "session_id": self.session_id,
@@ -41,28 +41,64 @@ class DankAuto:
             callback(*args)
 
     async def run(self):
+        await self.auto_all()
 
-        await self.daily()
-        await asyncio.sleep(3)
-        # # await self.vote()
-        # await asyncio.sleep(3)
-        await self.adventure()
-        await asyncio.sleep(3)
-        await self.stream()
-        await asyncio.sleep(3)
-        await self.work_shift()
-        await asyncio.sleep(3)
-        await self.use_item("Lucky Horseshoe", 15 * 60)
-        await asyncio.sleep(5)
-        await self.use_item("Pizza Slice", 1 * 60 * 60)
-        await asyncio.sleep(5)
-        await self.use_item("Camera", 8 * 60 * 60)
-        await asyncio.sleep(5)
-        await self.use_item("Crunchy Taco", 1 * 24 * 60 * 60)
-        await asyncio.sleep(5)
-        await self.auto()
-        # await self.blackjack("7k")
-        # await asyncio.sleep(20*6000*60)
+    async def auto_all(self):
+        while True:
+            await self.stats()
+            await self.hunt()
+            await self.attack()
+            await self.gather()
+            print("sleep 10 minutes")
+            await asyncio.sleep(10 * 60)
+
+    async def stats(self):
+        data = {
+            "data": {
+                "version": "1035597151071379566",
+                "id": "1034883078956535839",
+                "name": "stats",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+        print("stats")
+
+    async def gather(self):
+        data = {
+            "data": {
+                "version": "1112138299532918850",
+                "id": "1112138299532918845",
+                "name": "gather",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+        print("gather")
+
+    async def hunt(self):
+        data = {
+            "data": {
+                "version": "1147652859383525431",
+                "id": "1147652859383525428",
+                "name": "hunt",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+        print("hunt")
+
+    async def attack(self):
+        data = {
+            "data": {
+                "version": "1034883078956535842",
+                "id": "1034883078885212291",
+                "name": "attack",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+        print("attack")
 
     async def command(self, payload, loop=1, sleep=2):
         message = payload["data"]["name"]
@@ -175,21 +211,6 @@ class DankAuto:
                 "version": "1022917002878259285",
                 "id": "1011560371078832204",
                 "name": "dig",
-            }
-        }
-        data.update(self.payload())
-        await self.command(data)
-        res = self.api.retrieve_message()
-        await self.check_alert(res)
-        await self.mini_games(res)
-
-    @isFocus
-    async def hunt(self):
-        data = {
-            "data": {
-                "version": "1022917002932793367",
-                "id": "1011560371171102760",
-                "name": "hunt",
             }
         }
         data.update(self.payload())
