@@ -16,7 +16,7 @@ class AFAuto:
         self.application_id = application_id
         self.session_id = session_id
         self.api = DiscordApi(self.auth_token, self.channel_id)
-        self.username = json.loads(self.api.send_message("Hello").text)["author"][
+        self.username = json.loads(self.api.send_message("Helo").text)["author"][
             "username"
         ]
         self.stream_num = 1
@@ -42,8 +42,10 @@ class AFAuto:
     async def run(self):
         await self.stats(8 * 60)
         await self.hunt(7 * 60 + 20)
-        await self.attack(9 * 60 + 20)
+        await self.attack(9 * 60 + 40)
         await self.gather(10 * 60 + 20)
+        await asyncio.sleep(2 * 60 * 60)
+        # await self.craft_hunt_item(10 * 60 + 20)
 
     async def auto_all(self):
         while True:
@@ -51,6 +53,49 @@ class AFAuto:
             await self.hunt(7 * 60 + 20)
             await self.attack(9 * 60 + 20)
             await self.gather(10 * 60 + 20)
+
+    async def craft_hunt_item(self, time=10 * 60):
+        data = { 
+            "data": {
+                "version": "1157782679345967281",
+                "id": "1113153202922209371",
+                "name": "professions",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+        await asyncio.sleep(2)
+
+        res = self.api.retrieve_message()
+        
+        msg_id = res["id"]
+        
+        data = {
+            "message_id": msg_id,
+            "data": {
+                "component_type": 2,
+                "custom_id": "recipies-herbalism",
+            }
+        }
+            
+        data.update(self.payload(3))
+        await self.command(data, message="craft herbalism")
+        await asyncio.sleep(2)
+        
+        
+        # data = { 
+        #     "data": {
+        #         "component_type": 2,
+        #         "custom_id": "recipies-herbalism",
+        #         "name": "recipes-herbalism",
+        #     }
+        # }
+        # data.update(self.payload())
+        # await self.command(data)
+        # await asyncio.sleep(2)
+        # now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # print(f"craft at {now}")
+        # asyncio.create_task(self.schedule(time, self.attack, time))
 
     async def stats(self, time=10 * 60):
         data = {
@@ -65,7 +110,6 @@ class AFAuto:
         await self.command(data)
         print(f"stats at {now}")
         asyncio.create_task(self.schedule(10 * 60, self.stats))
-
 
     async def gather(self, time=10 * 60):
         data = {
@@ -95,7 +139,6 @@ class AFAuto:
         print(f"hunt at {now}")
         asyncio.create_task(self.schedule(time, self.hunt, time))
 
-
     async def attack(self, time=10 * 60):
         data = {
             "data": {
@@ -110,8 +153,10 @@ class AFAuto:
         print(f"attack at {now}")
         asyncio.create_task(self.schedule(time, self.attack, time))
 
-    async def command(self, payload, loop=1, sleep=2):
-        message = payload["data"]["name"]
+
+    async def command(self, payload,message="", loop=1, sleep=2):
+        if message == "":
+            message = payload["data"]["name"]
         for i in range(loop):
             status = self.api.send_interact(payload).text
             print(f"{message:42.40} | {status:50.50} | {self.username}")
@@ -124,5 +169,3 @@ class AFAuto:
         print(f"{message:42.40} | {status:150.150} | {self.username}")
         if sleep != 0:
             time.sleep(sleep)
-
-    
