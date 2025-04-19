@@ -53,7 +53,7 @@ class NinjaSageAuto:
             random_int = random.randint(1, 10)
 
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            if random_int < 5:
+            if random_int < 6:
                 await self.command(f"{msg}")
                 print(f"Command {msg} sent at {now}")
 
@@ -74,4 +74,4 @@ class NinjaSageAuto:
                 print(f"Command {msg} not sent")
 
             print(f"Sleeping for 240 seconds")
-            await asyncio.sleep(240)
+            await asyncio.sleep(4*60)
