@@ -41,9 +41,9 @@ class AFAuto:
 
     async def run(self):
         await self.stats(8 * 60)
-        await self.hunt(7 * 60 + 20)
-        await self.attack(9 * 60 + 40)
-        await self.gather(10 * 60 + 20)
+        await self.hunt(7 * 60 + 10)
+        await self.attack(12 * 60 + 10)
+        await self.gather(10 * 60 + 10)
         await asyncio.sleep(2 * 60 * 60)
         # await self.craft_hunt_item(10 * 60 + 20)
 
@@ -151,7 +151,7 @@ class AFAuto:
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         await self.command(data)
         print(f"attack at {now}")
-        asyncio.create_task(self.schedule(time, self.attack, time))
+        asyncio.create_task(self.schedule(time, self.attack, time + 30))
 
 
     async def command(self, payload,message="", loop=1, sleep=2):
