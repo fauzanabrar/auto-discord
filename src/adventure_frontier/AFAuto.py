@@ -54,8 +54,42 @@ class AFAuto:
             await self.attack(9 * 60 + 20)
             await self.gather(10 * 60 + 20)
 
+    async def use_bandage(self):
+        data = {
+            "data": {
+                "version": "1034883078990073951",
+                "id": "1034883078956535841",
+                "name": "use",
+            }
+        }
+        data.update(self.payload())
+        await self.command(data)
+
+        payload = {
+            "type": 3,
+            "guild_id": "1362991722476605520",
+            "channel_id": "1362992125733503177",
+            "message_flags": 64,
+            "message_id": "1363029719842426951",
+            "application_id": "1034876159197974569",
+            "session_id": "539050b262d51344957a4ee2b12d41f6",
+            "data": {
+                "component_type": 3,
+                "custom_id": "use-item-0",
+                "type": 3,
+                "values": ["use-item-1964c8308a052e307018c5c"],
+            },
+        }
+
+        status = self.api.send_interact(payload).text
+        print(status)
+
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"bandage at {now}")
+        asyncio.create_task(self.schedule(10 * 60, self.use_bandage))
+
     async def craft_hunt_item(self, time=10 * 60):
-        data = { 
+        data = {
             "data": {
                 "version": "1157782679345967281",
                 "id": "1113153202922209371",
@@ -67,23 +101,22 @@ class AFAuto:
         await asyncio.sleep(2)
 
         res = self.api.retrieve_message()
-        
+
         msg_id = res["id"]
-        
+
         data = {
             "message_id": msg_id,
             "data": {
                 "component_type": 2,
                 "custom_id": "recipies-herbalism",
-            }
+            },
         }
-            
+
         data.update(self.payload(3))
         await self.command(data, message="craft herbalism")
         await asyncio.sleep(2)
-        
-        
-        # data = { 
+
+        # data = {
         #     "data": {
         #         "component_type": 2,
         #         "custom_id": "recipies-herbalism",
@@ -153,8 +186,7 @@ class AFAuto:
         print(f"attack at {now}")
         asyncio.create_task(self.schedule(time, self.attack, time + 30))
 
-
-    async def command(self, payload,message="", loop=1, sleep=2):
+    async def command(self, payload, message="", loop=1, sleep=2):
         if message == "":
             message = payload["data"]["name"]
         for i in range(loop):

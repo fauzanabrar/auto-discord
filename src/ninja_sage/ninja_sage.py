@@ -74,4 +74,4 @@ class NinjaSageAuto:
                 print(f"Command {msg} not sent")
 
             print(f"Sleeping for 240 seconds")
-            await asyncio.sleep(4*60)
+            await asyncio.sleep(4 * 60)

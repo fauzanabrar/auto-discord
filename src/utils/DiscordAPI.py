@@ -11,7 +11,7 @@ class DiscordApi:
     def retrieve_message(self, order=0):
         header = {"authorization": self.auth_token}
         r = requests.get(
-            f"https://discord.com/api/v8/channels/{self.channel_id}/messages",
+            f"https://discord.com/api/v9/channels/{self.channel_id}/messages",
             headers=header,
         )
 
@@ -39,6 +39,15 @@ class DiscordApi:
         r = requests.post(url, json=data, headers=header)
 
         return r
+
+    def interact_message(self, application_id, interaction_token):
+        response = requests.get(
+            f"https://discord.com/api/v9/webhooks/{application_id}/{interaction_token}/messages/@original",
+            headers={"Authorization": self.auth_token},
+        )
+
+        message_id = response.json()["id"]
+        print(message_id)
 
     def delete_message(self, message_id):
         url = f"https://discord.com/api/v9/channels/{self.channel_id}/messages/{message_id}"
