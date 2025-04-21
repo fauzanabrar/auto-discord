@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import asyncio
 
 from src.ninja_sage.ninja_sage import *
