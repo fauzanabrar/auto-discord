@@ -45,15 +45,9 @@ class AFAuto:
         await self.attack(12 * 60 + 10)
         await self.gather(10 * 60 + 10)
         await self.pet_attack(30 * 60 + 20)
-        await asyncio.sleep(2 * 60 * 60)
+        await asyncio.sleep(3 * 365 * 24 * 60 * 60)
         # await self.craft_hunt_item(10 * 60 + 20)
 
-    async def auto_all(self):
-        while True:
-            await self.stats()
-            await self.hunt(7 * 60 + 20)
-            await self.attack(9 * 60 + 20)
-            await self.gather(10 * 60 + 20)
 
     async def use_bandage(self):
         data = {
@@ -185,6 +179,10 @@ class AFAuto:
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         await self.command(data)
         print(f"attack at {now}")
+
+        # Check if the user is dead
+        await self.revive()
+
         asyncio.create_task(self.schedule(time, self.attack, time + 3))
 
     async def pet_attack(self, time=10 * 60):
@@ -199,9 +197,26 @@ class AFAuto:
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         await self.command(data, message="pet attack")
-        print(f"attack at {now}")
+        print(f"pet attack at {now}")
 
         asyncio.create_task(self.schedule(time, self.attack, time))
+
+    async def revive(self, time=0):
+        data = {
+            "data": {
+                "version": "1034883078990073946",
+                "id": "1034883078885212298",
+                "name": "revive",
+            }
+        }
+        data.update(self.payload())
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        await self.command(data, message="revive")
+        print(f"revive at {now}")
+        
+        if time != 0:
+            asyncio.create_task(self.schedule(time, self.attack, time))
 
     async def command(self, payload, message="", loop=1, sleep=2):
         if message == "":
