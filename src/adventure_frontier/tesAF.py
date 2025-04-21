@@ -43,7 +43,7 @@ class AFTest(AFAuto):
 
     async def attack(self, time=10 * 60):
         return await super().attack(time)
-    
+
     async def pet_attack(self, time=10 * 60):
         return await super().pet_attack(time)
 
@@ -86,7 +86,6 @@ class AFTest(AFAuto):
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"bandage at {now}")
         asyncio.create_task(self.schedule(10 * 60, self.use_bandage))
-
 
     async def craft_hunt_item(self, time=10 * 60):
         # data = {
@@ -143,13 +142,13 @@ class AFTest(AFAuto):
 
 
 init = {
-    "auth_token": "",
+    "auth_token": "NzEyNTYzNzQ3ODEzNTg5MDQy.GTBF5B.JIpfNRW-_WkhcC7lPmQn-qKe_Tt7QRgp3MauKU",
     "channel_id": {
-        "ninja_sage_id": "",
+        "ninja_sage_id": "949159340802199593",
         "adventure_frontier": {
-            "url": "",
-            "application_id": "",
-            "session_id": "",
+            "url": "https://discord.com/channels/1362991722476605520/1362992125733503177",
+            "application_id": "1034876159197974569",
+            "session_id": "035a9f9f5b08eb9f030bec01a1a7a25e",
         },
     },
 }
