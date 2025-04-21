@@ -47,6 +47,12 @@ class AFTest(AFAuto):
     async def pet_attack(self, time=10 * 60):
         return await super().pet_attack(time)
 
+    async def runes(self, time=10 * 60):
+        return await super().runes(time)
+
+    async def revive(self, time=0):
+        return await super().revive(time)
+
     async def gather(self, time=10 * 60):
         return await super().gather(time)
 
@@ -137,18 +143,15 @@ class AFTest(AFAuto):
         # await self.use_bandage(10 * 60)
         await asyncio.sleep(1)
 
-    async def check_black_hole(self, res={}):
-        return await super().check_black_hole(res)
-
 
 init = {
-    "auth_token": "NzEyNTYzNzQ3ODEzNTg5MDQy.GTBF5B.JIpfNRW-_WkhcC7lPmQn-qKe_Tt7QRgp3MauKU",
+    "auth_token": "",
     "channel_id": {
-        "ninja_sage_id": "949159340802199593",
+        "ninja_sage_id": "",
         "adventure_frontier": {
-            "url": "https://discord.com/channels/1362991722476605520/1362992125733503177",
-            "application_id": "1034876159197974569",
-            "session_id": "035a9f9f5b08eb9f030bec01a1a7a25e",
+            "url": "",
+            "application_id": "",
+            "session_id": "",
         },
     },
 }
