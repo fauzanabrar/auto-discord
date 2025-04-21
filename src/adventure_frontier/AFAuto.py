@@ -45,6 +45,7 @@ class AFAuto:
         await self.attack(12 * 60 + 10)
         await self.gather(10 * 60 + 10)
         await self.pet_attack(30 * 60 + 20)
+        await self.runes(24 * 60 * 60)
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
         # await self.craft_hunt_item(10 * 60 + 20)
 
@@ -150,8 +151,24 @@ class AFAuto:
         data.update(self.payload())
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         await self.command(data)
+
         print(f"gather at {now}")
         asyncio.create_task(self.schedule(time, self.gather, time))
+
+    async def runes(self, time=24 * 60 * 60):
+        data = {
+            "data": {
+                "version": "1086774197101010996",
+                "id": "1086774197101010995",
+                "name": "runes",
+            }
+        }
+        data.update(self.payload())
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        await self.command(data)
+
+        print(f"runes at {now}")
+        asyncio.create_task(self.schedule(time, self.runes, time))
 
     async def hunt(self, time=10 * 60):
         data = {
@@ -164,6 +181,7 @@ class AFAuto:
         data.update(self.payload())
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         await self.command(data)
+
         print(f"hunt at {now}")
         asyncio.create_task(self.schedule(time, self.hunt, time))
 
@@ -199,7 +217,7 @@ class AFAuto:
         await self.command(data, message="pet attack")
         print(f"pet attack at {now}")
 
-        asyncio.create_task(self.schedule(time, self.attack, time))
+        asyncio.create_task(self.schedule(time, self.pet_attack, time))
 
     async def revive(self, time=0):
         data = {
@@ -216,7 +234,7 @@ class AFAuto:
         print(f"revive at {now}")
         
         if time != 0:
-            asyncio.create_task(self.schedule(time, self.attack, time))
+            asyncio.create_task(self.schedule(time, self.revive, time))
 
     async def command(self, payload, message="", loop=1, sleep=2):
         if message == "":
