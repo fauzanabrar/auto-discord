@@ -184,7 +184,23 @@ class AFAuto:
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         await self.command(data)
         print(f"attack at {now}")
-        asyncio.create_task(self.schedule(time, self.attack, time + 30))
+        asyncio.create_task(self.schedule(time, self.attack, time + 3))
+
+    async def pet_attack(self, time=10 * 60):
+        data = {
+            "data": {
+                "version": "1251576908278399239",
+                "id": "1251576907770757172",
+                "name": "petattack",
+            }
+        }
+        data.update(self.payload())
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        await self.command(data, message="pet attack")
+        print(f"attack at {now}")
+
+        asyncio.create_task(self.schedule(time, self.attack, time))
 
     async def command(self, payload, message="", loop=1, sleep=2):
         if message == "":
