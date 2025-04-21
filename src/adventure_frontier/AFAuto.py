@@ -44,6 +44,7 @@ class AFAuto:
         await self.hunt(7 * 60 + 10)
         await self.attack(12 * 60 + 10)
         await self.gather(10 * 60 + 10)
+        await self.pet_attack(30 * 60 + 20)
         await asyncio.sleep(2 * 60 * 60)
         # await self.craft_hunt_item(10 * 60 + 20)
 
