@@ -54,22 +54,28 @@ class NinjaSageAuto:
 
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if random_int < 6:
-                await self.command(f"{msg}")
-                print(f"Command {msg} sent at {now}")
+                try:
+                    await self.command(f"{msg}")
+                    print(f"Command {msg} sent at {now}")
 
-                res = self.api.retrieve_message(10)
-                res = [r for r in res if r["content"] == msg]
+                    res = self.api.retrieve_message(10)
+                    res = [r for r in res if r["content"] == msg]
 
-                if len(res) == 0:
-                    print(f"Command {msg} not found")
+                    if len(res) == 0:
+                        print(f"Command {msg} not found")
 
-                msg_id = res[0]["id"]
-                content = res[0]["content"]
+                    msg_id = res[0]["id"]
+                    content = res[0]["content"]
 
-                if content == msg:
-                    self.api.delete_message(msg_id)
-                    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    print(f"Command {msg} deleted at {now}")
+                    if content == msg:
+                        self.api.delete_message(msg_id)
+                        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        print(f"Command {msg} deleted at {now}")
+                except Exception as e:
+                    print(f"Error: {e}")
+                    print(f"Command {msg} not sent")
+                    await asyncio.sleep(5)
+                    continue
             else:
                 print(f"Command {msg} not sent")
 
