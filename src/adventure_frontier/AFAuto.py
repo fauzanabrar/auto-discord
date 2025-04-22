@@ -44,6 +44,7 @@ class AFAuto:
         await self.hunt(7 * 60 + 10)
         await self.attack(12 * 60 + 10)
         await self.gather(10 * 60 + 10)
+        await self.mine(10 * 60 + 10)
         await self.pet_attack(30 * 60 + 20)
         await self.runes(24 * 60 * 60)
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
@@ -153,6 +154,21 @@ class AFAuto:
 
         print(f"gather at {now}")
         asyncio.create_task(self.schedule(time, self.gather, time))
+
+    async def mine(self, time=10 * 60):
+        data = {
+            "data": {
+                "version": "1112138299532918851",
+                "id": "1112138299532918846",
+                "name": "mine",
+            }
+        }
+        data.update(self.payload())
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        await self.command(data)
+
+        print(f"mine at {now}")
+        asyncio.create_task(self.schedule(time, self.mine, time))
 
     async def runes(self, time=24 * 60 * 60):
         data = {
