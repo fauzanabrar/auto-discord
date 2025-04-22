@@ -42,7 +42,7 @@ class AFAuto:
     async def run(self):
         await self.stats(8 * 60)
         await self.hunt(7 * 60 + 10)
-        await self.attack(12 * 60 + 10)
+        await self.attack(3 * 60)
         await self.gather(10 * 60 + 10)
         await self.mine(10 * 60 + 10)
         await self.pet_attack(30 * 60 + 20)
@@ -216,7 +216,7 @@ class AFAuto:
         # Check if the user is dead
         await self.revive()
 
-        asyncio.create_task(self.schedule(time, self.attack, time + 3))
+        asyncio.create_task(self.schedule(time, self.attack, time))
 
     async def pet_attack(self, time=10 * 60):
         data = {
