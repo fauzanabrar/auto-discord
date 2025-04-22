@@ -44,4 +44,6 @@ for item_name in "${!items[@]}"; do
     -H 'sec-ch-ua: "Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"' \
     -H 'sec-ch-ua-mobile: ?0' \
     -H 'sec-ch-ua-platform: "Windows"'
+
+    sleep 2
 done
