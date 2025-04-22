@@ -21,7 +21,7 @@ function clickCraftAgainButton(times = 10) {
             clearInterval(interval);
             console.log('Done clicking');
         }
-    }, 500); // adjust delay as needed to avoid over-clicking too fast
+    }, 1500); // adjust delay as needed to avoid over-clicking too fast
 }
 
 clickCraftAgainButton(10); // Call the function with the desired number of clicks
