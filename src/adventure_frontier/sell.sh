@@ -7,6 +7,13 @@ declare -A items=(
   ["m stickweed"]="1964864f4d3cbe90c69927c"
   ["bloodberry"]="1964864f4d4eaabfeaf8397"
   ["deatnettle"]="1964af50474ff3945dc4243"
+  # ["combat potion"]="196538bcb6aa42d12c4df71"
+  # ["four leaf"]="1964d48483ced2aba81c7f8"
+  # ["bandage"]="1965aec348bd1c7efef294c"
+  # ["cooked meat"]="196587e1640d9a9b072a7a7"
+  # ["leather bag"]="1965b0340738b16fc91a6a0"
+  # ["explorer kit"]="1965af1daa1fbbd4be0bea8"
+
 )
 
 # Prompt the user for the amount of each item to sell
