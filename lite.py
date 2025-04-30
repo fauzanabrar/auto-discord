@@ -7,14 +7,14 @@ import argparse
 
 
 
-async def auto_af(auth_token, url, application_id, session_id):
-    af = AFAuto(auth_token, url, application_id, session_id)
+async def auto_af(auth_token, url, application_id, session_id, raid_url):
+    af = AFAuto(auth_token, url, application_id, session_id, raid_url)
     await af.run()
 
 
 async def auto_ninja_sage(auth_token, channel_id):
-    af = NinjaSageAuto(auth_token, channel_id)
-    await af.run()
+    ns = NinjaSageAuto(auth_token, channel_id)
+    await ns.run()
 
 
 async def main(task_type):
@@ -37,16 +37,19 @@ async def main(task_type):
                 tasks.append(auto_ninja_sage(auth_token, ninja_sage_channel_id))
 
             elif "adventure_frontier" in j and task_type == "af":
-                af_setup = ["", "", ""]  # url, application_id, session_id
+                af_setup = ["", "", "", ""]  # url, application_id, session_id, raid_url
+
                 for k in i["channel_id"][str(j)]:
-                    if "url" in k:
+                    if "raid_url" in k:
+                        af_setup[3] = i["channel_id"][str(j)][str(k)]
+                    elif "url" in k:
                         af_setup[0] = i["channel_id"][str(j)][str(k)]
                     elif "application_id" in k:
                         af_setup[1] = i["channel_id"][str(j)][str(k)]
                     elif "session_id" in k:
                         af_setup[2] = i["channel_id"][str(j)][str(k)]
                 # af_auto = asyncio.create_task(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
-                tasks.append(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
+                tasks.append(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2], af_setup[3]))
 
     # Run all tasks concurrently
     await asyncio.gather(*tasks)

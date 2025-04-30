@@ -37,7 +37,8 @@ You can change the `init.json` file and add your account detail. It can run for 
       "adventure_frontier": {
         "url": "YOUR ADVENTURE FRONTIER CHANNEL URL",
         "application_id": "YOUR APPLICATION ID ACCOUNT 1",
-        "session_id": "YOUR SESSION ID ACCOUNT 1"
+        "session_id": "YOUR SESSION ID ACCOUNT 1",
+        "raid_url": "YOUR ADVENTURE FRONTIER RAID CHANNEL URL ACCOUNT 1"
       },
       "dank": {
         "url": "YOUR DANK MEMER CHANNEL URL",

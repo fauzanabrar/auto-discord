@@ -9,13 +9,16 @@ import datetime
 
 class AFAuto:
 
-    def __init__(self, auth_token, url, application_id, session_id):
+    def __init__(self, auth_token, url, application_id, session_id, raid_url):
         self.auth_token = auth_token
         self.guild_id = url.split("/")[4]
         self.channel_id = url.split("/")[5]
         self.application_id = application_id
         self.session_id = session_id
+        self.raid_guild_id = raid_url.split("/")[4]
+        self.raid_channel_id = raid_url.split("/")[5] 
         self.api = DiscordApi(self.auth_token, self.channel_id)
+        self.raid_api = DiscordApi(self.auth_token, self.raid_channel_id)
         self.username = json.loads(self.api.send_message("Helo").text)["author"][
             "username"
         ]
@@ -39,16 +42,51 @@ class AFAuto:
         else:
             callback(*args)
 
+    async def schedule_at(self, target_time, interval, callback, *args):
+        """
+        Schedule a task to run at a specific time repeatedly.
+        
+        :param target_time: A string in "HH:MM" format representing the target time.
+        :param interval: Interval in seconds for repeated execution.
+        :param callback: The coroutine or function to execute.
+        :param args: Arguments to pass to the callback.
+        """
+        while True:
+            now = datetime.datetime.now()
+            target = datetime.datetime.combine(now.date(), datetime.time.fromisoformat(target_time))
+            
+            # If the target time has already passed today, schedule for tomorrow
+            if now > target:
+                target += datetime.timedelta(hours=12)
+            
+            delay = (target - now).total_seconds()
+            hours, remainder = divmod(int(delay), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
+            print(f"Scheduling task to run at {target_time}. Next run in {readable_delay}.")
+            
+            await asyncio.sleep(delay)
+            
+            # Execute the callback
+            if asyncio.iscoroutinefunction(callback):
+                await callback(*args)
+            else:
+                callback(*args)
+            
+            # Wait for the interval before scheduling the next run
+            await asyncio.sleep(interval)
+
+
     async def run(self):
-        await self.stats(8 * 60)
+        await self.schedule_at("20:30",10 * 60, self.raid)
+        # await self.stats(10 * 60)
         await self.hunt(7 * 60 + 10)
         await self.attack(3 * 60)
-        await self.gather(10 * 60 + 10)
-        await self.mine(10 * 60 + 10)
-        await self.pet_attack(30 * 60 + 20)
+        await self.gather(10 * 60 + 5)
+        await self.mine(10 * 60 + 5)
+        await self.pet_attack(10 * 60)
         await self.runes(24 * 60 * 60)
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
-        # await self.craft_hunt_item(10 * 60 + 20)
 
     async def use_bandage(self):
         data = {
@@ -233,6 +271,48 @@ class AFAuto:
         print(f"pet attack at {now}")
 
         asyncio.create_task(self.schedule(time, self.pet_attack, time))
+
+    async def get_raid_attack_message_id(self):
+        # Retrieve the latest messages from the raid channel
+        messages = self.raid_api.retrieve_message(10)  # Adjust the number of messages as needed
+
+        for message in messages:
+            # Check if the message has components (buttons)
+            if "components" in message and message["components"]:
+                for component in message["components"]:
+                    for button in component["components"]:
+                        # Check if the button has the custom_id "raidattack"
+                        if button.get("custom_id") == "raidattack":
+                            return message["id"]  # Return the message ID
+
+        return None  # Return None if no message with the "raidattack" button is found
+
+    async def raid(self):
+        raid_attack_message_id = await self.get_raid_attack_message_id()
+
+        if raid_attack_message_id:
+            data = {
+                "type": 3,
+                "guild_id": self.raid_guild_id,
+                "channel_id": self.raid_channel_id,
+                "message_id": raid_attack_message_id,
+                "application_id": self.application_id,
+                "session_id": self.session_id,
+                "data": {
+                    "component_type": 2,
+                    "custom_id": "raidattack"
+                }
+            }
+            
+            for i in range(30):
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                await self.command(data, message="raid attack")
+                print(f"raid attack at {now}")
+                await self.revive()
+                await asyncio.sleep(17)
+
+        else:
+            print("No Raid Attack message found.")
 
     async def revive(self, time=0):
         data = {
