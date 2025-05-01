@@ -57,7 +57,7 @@ class AFAuto:
             
             # If the target time has already passed today, schedule for tomorrow
             if now > target:
-                target += datetime.timedelta(hours=12)
+                target += datetime.timedelta(days=1)
             
             delay = (target - now).total_seconds()
             hours, remainder = divmod(int(delay), 3600)
@@ -76,9 +76,15 @@ class AFAuto:
             # Wait for the interval before scheduling the next run
             await asyncio.sleep(interval)
 
+    async def schedule_raid(self, target_time):
+        
+        asyncio.create_task(self.schedule_at(target_time, 10 * 60, self.raid))
+
+        # Add 12 hours to the target time for the next raid
+        target_time = (datetime.datetime.strptime(target_time, "%H:%M") + datetime.timedelta(hours=12)).strftime("%H:%M")
+        asyncio.create_task(self.schedule_at(target_time, 10 * 60, self.raid)) 
 
     async def run(self):
-        await self.schedule_at("20:30",10 * 60, self.raid)
         # await self.stats(10 * 60)
         await self.hunt(7 * 60 + 10)
         await self.attack(3 * 60)
@@ -86,6 +92,7 @@ class AFAuto:
         await self.mine(10 * 60 + 5)
         await self.pet_attack(10 * 60)
         await self.runes(24 * 60 * 60)
+        await self.schedule_raid("10:30")
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
 
     async def use_bandage(self):
