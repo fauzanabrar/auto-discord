@@ -77,12 +77,24 @@ class AFAuto:
             await asyncio.sleep(interval)
 
     async def schedule_raid(self, target_time):
-        
-        asyncio.create_task(self.schedule_at(target_time, 10 * 60, self.raid))
+        # Parse the initial target time
+        target_datetime = datetime.datetime.strptime(target_time, "%H:%M")
+        now = datetime.datetime.now()
 
-        # Add 12 hours to the target time for the next raid
-        target_time = (datetime.datetime.strptime(target_time, "%H:%M") + datetime.timedelta(hours=12)).strftime("%H:%M")
-        asyncio.create_task(self.schedule_at(target_time, 10 * 60, self.raid)) 
+        # Adjust the target time to today or tomorrow if it has already passed
+        if target_datetime.time() <= now.time():
+            target_datetime = target_datetime.replace(year=now.year, month=now.month, day=now.day) + datetime.timedelta(days=1)
+        else:
+            target_datetime = target_datetime.replace(year=now.year, month=now.month, day=now.day)
+
+        # Schedule the first and second raids concurrently
+        first_raid_time = target_datetime.strftime("%H:%M")
+        second_raid_time = (target_datetime + datetime.timedelta(hours=12)).strftime("%H:%M")
+
+        await asyncio.gather(
+            self.schedule_at(first_raid_time, 10 * 60, self.raid),
+            self.schedule_at(second_raid_time, 10 * 60, self.raid)
+        )
 
     async def run(self):
         # await self.stats(10 * 60)
@@ -92,7 +104,7 @@ class AFAuto:
         await self.mine(10 * 60 + 5)
         await self.pet_attack(10 * 60)
         await self.runes(24 * 60 * 60)
-        await self.schedule_raid("10:30")
+        await self.schedule_raid("10:31")
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
 
     async def use_bandage(self):
@@ -317,6 +329,9 @@ class AFAuto:
                 print(f"raid attack at {now}")
                 await self.revive()
                 await asyncio.sleep(17)
+
+                # Yield control to the event loop
+                await asyncio.sleep(0)
 
         else:
             print("No Raid Attack message found.")
