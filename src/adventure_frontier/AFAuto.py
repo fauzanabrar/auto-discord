@@ -77,34 +77,51 @@ class AFAuto:
             await asyncio.sleep(interval)
 
     async def schedule_raid(self, target_time):
-        # Parse the initial target time
-        target_datetime = datetime.datetime.strptime(target_time, "%H:%M")
-        now = datetime.datetime.now()
+        """
+        Schedule the first and second raids using asyncio.Event to ensure precise timing.
+        """
+        async def trigger_raid(target_time):
+            now = datetime.datetime.now()
+            target_datetime = datetime.datetime.combine(now.date(), datetime.time.fromisoformat(target_time))
 
-        # Adjust the target time to today or tomorrow if it has already passed
-        if target_datetime.time() <= now.time():
-            target_datetime = target_datetime.replace(year=now.year, month=now.month, day=now.day) + datetime.timedelta(days=1)
-        else:
-            target_datetime = target_datetime.replace(year=now.year, month=now.month, day=now.day)
+            # Adjust the target time to today or tomorrow if it has already passed
+            if now > target_datetime:
+                target_datetime += datetime.timedelta(days=1)
 
-        # Schedule the first and second raids concurrently
-        first_raid_time = target_datetime.strftime("%H:%M")
-        second_raid_time = (target_datetime + datetime.timedelta(hours=12)).strftime("%H:%M")
+            delay = (target_datetime - now).total_seconds()
+            hours, remainder = divmod(int(delay), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
+            print(f"Raid scheduled at {target_time}. Waiting {readable_delay}.")
+            await asyncio.sleep(delay)
+            print(f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            await self.raid()
 
-        await asyncio.gather(
-            self.schedule_at(first_raid_time, 10 * 60, self.raid),
-            self.schedule_at(second_raid_time, 10 * 60, self.raid)
-        )
+        # Schedule the first raid
+        asyncio.create_task(trigger_raid(target_time))
+
+        # Schedule the second raid 12 hours later
+        second_raid_time = (datetime.datetime.strptime(target_time, "%H:%M") + datetime.timedelta(hours=12)).time()
+        asyncio.create_task(trigger_raid(second_raid_time.strftime("%H:%M")))
 
     async def run(self):
-        # await self.stats(10 * 60)
-        await self.hunt(7 * 60 + 10)
-        await self.attack(3 * 60)
-        await self.gather(10 * 60 + 5)
-        await self.mine(10 * 60 + 5)
-        await self.pet_attack(10 * 60)
-        await self.runes(24 * 60 * 60)
-        await self.schedule_raid("10:31")
+        # Schedule other tasks concurrently
+        asyncio.create_task(self.hunt(8 * 60 + 10))
+        await asyncio.sleep(2)
+        asyncio.create_task(self.attack(3 * 60))
+        await asyncio.sleep(2)
+        asyncio.create_task(self.gather(10 * 60 + 5))
+        await asyncio.sleep(2)
+        asyncio.create_task(self.mine(10 * 60 + 5))
+        await asyncio.sleep(2)
+        asyncio.create_task(self.pet_attack(10 * 60))
+        await asyncio.sleep(2)
+        asyncio.create_task(self.runes(24 * 60 * 60))
+
+        # Schedule the raid task
+        await self.schedule_raid("10:30")
+
+        # Keep the program running
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
 
     async def use_bandage(self):
@@ -307,6 +324,7 @@ class AFAuto:
         return None  # Return None if no message with the "raidattack" button is found
 
     async def raid(self):
+        await asyncio.sleep(15)
         raid_attack_message_id = await self.get_raid_attack_message_id()
 
         if raid_attack_message_id:
@@ -323,7 +341,7 @@ class AFAuto:
                 }
             }
             
-            for i in range(30):
+            for i in range(23):
                 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 await self.command(data, message="raid attack")
                 print(f"raid attack at {now}")
