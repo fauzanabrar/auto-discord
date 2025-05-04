@@ -15,7 +15,14 @@ function loopExploreLastPlace(times = 5, delay = 5500) {
         dropdown.click();
 
         setTimeout(() => {
-            const options = document.querySelectorAll('div[role="option"]');
+            const container = document.querySelector('[data-list-id^=":"][data-list-id$=":"]');
+            let options = [];
+            if (container) {
+                options = container.querySelectorAll('[data-list-item-id*="___choose-explore-"]');
+            } else {
+                console.warn("No matching container found.");
+            }
+
             if (options.length === 0) {
                 console.warn('No options found.');
                 clearInterval(interval);
