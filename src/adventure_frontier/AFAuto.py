@@ -119,7 +119,7 @@ class AFAuto:
         asyncio.create_task(self.runes(24 * 60 * 60))
 
         # Schedule the raid task
-        await self.schedule_raid("10:30")
+        await asyncio.to_thread(self.schedule_raid, "10:30")
 
         # Keep the program running
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
