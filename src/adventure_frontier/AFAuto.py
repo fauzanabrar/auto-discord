@@ -17,7 +17,7 @@ class AFAuto:
         self.application_id = application_id
         self.session_id = session_id
         self.raid_guild_id = raid_url.split("/")[4]
-        self.raid_channel_id = raid_url.split("/")[5] 
+        self.raid_channel_id = raid_url.split("/")[5]
         self.api = DiscordApi(self.auth_token, self.channel_id)
         self.raid_api = DiscordApi(self.auth_token, self.raid_channel_id)
         self.username = json.loads(self.api.send_message("Helo").text)["author"][
@@ -46,7 +46,7 @@ class AFAuto:
     async def schedule_at(self, target_time, interval, callback, *args):
         """
         Schedule a task to run at a specific time repeatedly.
-        
+
         :param target_time: A string in "HH:MM" format representing the target time.
         :param interval: Interval in seconds for repeated execution.
         :param callback: The coroutine or function to execute.
@@ -54,26 +54,30 @@ class AFAuto:
         """
         while True:
             now = datetime.datetime.now()
-            target = datetime.datetime.combine(now.date(), datetime.time.fromisoformat(target_time))
-            
+            target = datetime.datetime.combine(
+                now.date(), datetime.time.fromisoformat(target_time)
+            )
+
             # If the target time has already passed today, schedule for tomorrow
             if now > target:
                 target += datetime.timedelta(days=1)
-            
+
             delay = (target - now).total_seconds()
             hours, remainder = divmod(int(delay), 3600)
             minutes, seconds = divmod(remainder, 60)
             readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
-            print(f"Scheduling task to run at {target_time}. Next run in {readable_delay}.")
-            
+            print(
+                f"Scheduling task to run at {target_time}. Next run in {readable_delay}."
+            )
+
             await asyncio.sleep(delay)
-            
+
             # Execute the callback
             if asyncio.iscoroutinefunction(callback):
                 await callback(*args)
             else:
                 callback(*args)
-            
+
             # Wait for the interval before scheduling the next run
             await asyncio.sleep(interval)
 
@@ -81,9 +85,12 @@ class AFAuto:
         """
         Schedule the first and second raids using asyncio.Event to ensure precise timing.
         """
+
         async def trigger_raid(target_time):
             now = datetime.datetime.now()
-            target_datetime = datetime.datetime.combine(now.date(), datetime.time.fromisoformat(target_time))
+            target_datetime = datetime.datetime.combine(
+                now.date(), datetime.time.fromisoformat(target_time)
+            )
 
             # Adjust the target time to today or tomorrow if it has already passed
             if now > target_datetime:
@@ -95,14 +102,19 @@ class AFAuto:
             readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
             print(f"Raid scheduled at {target_time}. Waiting {readable_delay}.")
             await asyncio.sleep(delay)
-            print(f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(
+                f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
             await self.raid()
 
         # Schedule the first raid
         asyncio.create_task(trigger_raid(target_time))
 
         # Schedule the second raid 12 hours later
-        second_raid_time = (datetime.datetime.strptime(target_time, "%H:%M") + datetime.timedelta(hours=12)).time()
+        second_raid_time = (
+            datetime.datetime.strptime(target_time, "%H:%M")
+            + datetime.timedelta(hours=12)
+        ).time()
         asyncio.create_task(trigger_raid(second_raid_time.strftime("%H:%M")))
 
     def schedule_raid_sync(self, target_time):
@@ -111,7 +123,9 @@ class AFAuto:
     def schedule_raid_thread(self, target_time):
         def trigger_raid(target_time):
             now = datetime.datetime.now()
-            target_datetime = datetime.datetime.combine(now.date(), datetime.time.fromisoformat(target_time))
+            target_datetime = datetime.datetime.combine(
+                now.date(), datetime.time.fromisoformat(target_time)
+            )
             if now > target_datetime:
                 target_datetime += datetime.timedelta(days=1)
             delay = (target_datetime - now).total_seconds()
@@ -120,15 +134,22 @@ class AFAuto:
             readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
             print(f"Raid scheduled at {target_time}. Waiting {readable_delay}.")
             time.sleep(delay)
-            print(f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(
+                f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
             asyncio.run(self.raid())
 
         # First raid
         t1 = threading.Thread(target=trigger_raid, args=(target_time,), daemon=True)
         t1.start()
         # Second raid 12 hours later
-        second_raid_time = (datetime.datetime.strptime(target_time, "%H:%M") + datetime.timedelta(hours=12)).time()
-        t2 = threading.Thread(target=trigger_raid, args=(second_raid_time.strftime("%H:%M"),), daemon=True)
+        second_raid_time = (
+            datetime.datetime.strptime(target_time, "%H:%M")
+            + datetime.timedelta(hours=12)
+        ).time()
+        t2 = threading.Thread(
+            target=trigger_raid, args=(second_raid_time.strftime("%H:%M"),), daemon=True
+        )
         t2.start()
 
     async def run(self):
@@ -146,8 +167,7 @@ class AFAuto:
         asyncio.create_task(self.runes(24 * 60 * 60))
 
         # Schedule the raid task
-        # await asyncio.to_thread(self.schedule_raid_sync, "08:52")
-        self.schedule_raid_thread("21:27")
+        self.schedule_raid_thread("07:31")
 
         # Keep the program running
         await asyncio.sleep(3 * 365 * 24 * 60 * 60)
@@ -338,7 +358,9 @@ class AFAuto:
 
     async def get_raid_attack_message_id(self):
         # Retrieve the latest messages from the raid channel
-        messages = self.raid_api.retrieve_message(10)  # Adjust the number of messages as needed
+        messages = self.raid_api.retrieve_message(
+            10
+        )  # Adjust the number of messages as needed
 
         for message in messages:
             # Check if the message has components (buttons)
@@ -363,12 +385,9 @@ class AFAuto:
                 "message_id": raid_attack_message_id,
                 "application_id": self.application_id,
                 "session_id": self.session_id,
-                "data": {
-                    "component_type": 2,
-                    "custom_id": "raidattack"
-                }
+                "data": {"component_type": 2, "custom_id": "raidattack"},
             }
-            
+
             for i in range(23):
                 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 await self.command(data, message="raid attack")
