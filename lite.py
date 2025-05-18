@@ -6,7 +6,6 @@ from src.adventure_frontier.AFAuto import *
 import argparse
 
 
-
 async def auto_af(auth_token, url, application_id, session_id, raid_url):
     af = AFAuto(auth_token, url, application_id, session_id, raid_url)
     await af.run()
@@ -49,7 +48,11 @@ async def main(task_type):
                     elif "session_id" in k:
                         af_setup[2] = i["channel_id"][str(j)][str(k)]
                 # af_auto = asyncio.create_task(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2]))
-                tasks.append(auto_af(auth_token, af_setup[0], af_setup[1], af_setup[2], af_setup[3]))
+                tasks.append(
+                    auto_af(
+                        auth_token, af_setup[0], af_setup[1], af_setup[2], af_setup[3]
+                    )
+                )
 
     # Run all tasks concurrently
     await asyncio.gather(*tasks)
