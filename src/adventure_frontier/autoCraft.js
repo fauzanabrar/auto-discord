@@ -4,8 +4,8 @@ function clickCraftAgainButton(times = 10) {
     let count = 0;
 
     const interval = setInterval(() => {
-        const button = [...document.querySelectorAll('button')].find(btn =>
-            btn.textContent.trim() === 'Craft again'
+        const button = [...document.querySelectorAll("button")].find(
+            (btn) => btn.textContent.trim() === "Craft again"
         );
 
         if (button) {
@@ -13,13 +13,13 @@ function clickCraftAgainButton(times = 10) {
             count++;
             console.log(`Clicked ${count} time(s)`);
         } else {
-            console.warn('Craft again button not found');
+            console.warn("Craft again button not found");
             clearInterval(interval);
         }
 
         if (count >= times) {
             clearInterval(interval);
-            console.log('Done clicking');
+            console.log("Done clicking");
         }
     }, 1500); // adjust delay as needed to avoid over-clicking too fast
 }
