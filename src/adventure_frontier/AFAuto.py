@@ -23,8 +23,6 @@ class AFAuto:
         self.username = json.loads(self.api.send_message("Helo").text)["author"][
             "username"
         ]
-        self.stream_num = 1
-        self.is_focus = False
         self.counter = 1
 
     def payload(self, type=2):
@@ -80,45 +78,6 @@ class AFAuto:
 
             # Wait for the interval before scheduling the next run
             await asyncio.sleep(interval)
-
-    async def schedule_raid(self, target_time):
-        """
-        Schedule the first and second raids using asyncio.Event to ensure precise timing.
-        """
-
-        async def trigger_raid(target_time):
-            now = datetime.datetime.now()
-            target_datetime = datetime.datetime.combine(
-                now.date(), datetime.time.fromisoformat(target_time)
-            )
-
-            # Adjust the target time to today or tomorrow if it has already passed
-            if now > target_datetime:
-                target_datetime += datetime.timedelta(days=1)
-
-            delay = (target_datetime - now).total_seconds()
-            hours, remainder = divmod(int(delay), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
-            print(f"Raid scheduled at {target_time}. Waiting {readable_delay}.")
-            await asyncio.sleep(delay)
-            print(
-                f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            )
-            await self.raid()
-
-        # Schedule the first raid
-        asyncio.create_task(trigger_raid(target_time))
-
-        # Schedule the second raid 12 hours later
-        second_raid_time = (
-            datetime.datetime.strptime(target_time, "%H:%M")
-            + datetime.timedelta(hours=12)
-        ).time()
-        asyncio.create_task(trigger_raid(second_raid_time.strftime("%H:%M")))
-
-    def schedule_raid_sync(self, target_time):
-        asyncio.run(self.schedule_raid(target_time))
 
     def schedule_raid_thread(self, target_time):
         def trigger_raid(target_time):
