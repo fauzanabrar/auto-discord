@@ -81,35 +81,23 @@ class AFAuto:
 
     def schedule_raid_thread(self, target_time):
         def trigger_raid(target_time):
-            now = datetime.datetime.now()
-            target_datetime = datetime.datetime.combine(
-                now.date(), datetime.time.fromisoformat(target_time)
-            )
-            if now > target_datetime:
-                target_datetime += datetime.timedelta(days=1)
-            delay = (target_datetime - now).total_seconds()
-            hours, remainder = divmod(int(delay), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            readable_delay = f"{hours} hours, {minutes} minutes, {seconds} seconds"
-            print(f"Raid scheduled at {target_time}. Waiting {readable_delay}.")
-            time.sleep(delay)
-            print(
-                f"Starting raid at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            )
-            asyncio.run(self.raid())
+            while True:
+                now = datetime.datetime.now()
+                target_hour, target_minute = map(int, target_time.split(":"))
+                alt_hour = (target_hour + 12) % 24
 
-        # First raid
-        t1 = threading.Thread(target=trigger_raid, args=(target_time,), daemon=True)
-        t1.start()
-        # Second raid 12 hours later
-        second_raid_time = (
-            datetime.datetime.strptime(target_time, "%H:%M")
-            + datetime.timedelta(hours=12)
-        ).time()
-        t2 = threading.Thread(
-            target=trigger_raid, args=(second_raid_time.strftime("%H:%M"),), daemon=True
-        )
-        t2.start()
+                # Check if now matches target hour/minute or alt hour/minute
+                if (now.hour == target_hour and now.minute == target_minute) or \
+                   (now.hour == alt_hour and now.minute == target_minute):
+                    print(f"Raid starting immediately at {now.strftime('%Y-%m-%d %H:%M:%S')}")
+                    asyncio.run(self.raid())
+                    time.sleep(10 * 60)  # Wait after raid to avoid multiple triggers
+                else:
+                    time.sleep(30)  # Check every minute
+                    
+        # Only need one thread now, since it handles both times
+        t = threading.Thread(target=trigger_raid, args=(target_time,), daemon=True)
+        t.start()
 
     async def run(self):
         # Schedule other tasks concurrently
